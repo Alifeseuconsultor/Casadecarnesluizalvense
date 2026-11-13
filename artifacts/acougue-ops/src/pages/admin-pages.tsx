@@ -9,6 +9,7 @@ import {
   useGetSalesReport, useGetStoreSettings, useUpdateStoreSettings,
 } from '@workspace/api-client-react';
 import type { CatalogProduct, CatalogProductInput, StoreSettingsInput } from '@workspace/api-client-react';
+import { GramsInput } from '@/components/grams-input';
 import { Form } from '@/components/ui/form';
 import { Search, Plus, Pencil, Copy, Package, Users, ChartNoAxesCombined, Settings2, X, Save } from 'lucide-react';
 
@@ -38,19 +39,21 @@ export function CatalogPage() {
   const [category, setCategory] = useState('all');
   const [notice, setNotice] = useState('');
   const form = useForm<ProductForm>({ defaultValues: blankProduct });
+  const saleUnit = form.watch('saleUnit');
+  const saleUnitField = form.register('saleUnit');
   const products = query.data ?? [];
   const categories = [...new Set(products.map(p => p.category))].sort();
   const visible = products.filter(p => (category === 'all' || p.category === category) && `${p.name} ${p.category}`.toLocaleLowerCase('pt-BR').includes(search.toLocaleLowerCase('pt-BR')));
   const open = (product?: CatalogProduct, duplicate = false) => {
     setEditing(product && !duplicate ? product : null);
-    form.reset(product ? { name: duplicate ? `${product.name} — cópia` : product.name, category: product.category, description: product.description ?? '', pricePerKg: String(product.pricePerKg), saleUnit: product.saleUnit, status: product.status, productType: product.productType, stockQuantity: product.stockQuantity == null ? '' : String(product.stockQuantity), imageUrl: product.imageUrl ?? '', promoPrice: product.promoPrice == null ? '' : String(product.promoPrice), promoLabel: product.promoLabel ?? '', promoStartsAt: product.promoStartsAt?.slice(0, 16) ?? '', promoEndsAt: product.promoEndsAt?.slice(0, 16) ?? '' } : blankProduct);
+    form.reset(product ? { name: duplicate ? `${product.name} — cópia` : product.name, category: product.category, description: product.description ?? '', pricePerKg: String(product.pricePerKg), saleUnit: product.saleUnit, status: product.status, productType: product.productType, stockQuantity: product.stockQuantity == null ? '' : String(Math.round(product.stockQuantity * (product.saleUnit === 'kg' ? 1000 : 1))), imageUrl: product.imageUrl ?? '', promoPrice: product.promoPrice == null ? '' : String(product.promoPrice), promoLabel: product.promoLabel ?? '', promoStartsAt: product.promoStartsAt?.slice(0, 16) ?? '', promoEndsAt: product.promoEndsAt?.slice(0, 16) ?? '' } : blankProduct);
     setFormOpen(true);
   };
   const payload = (v: ProductForm): CatalogProductInput => ({
     name: v.name.trim(), category: v.category.trim(), description: v.description || null,
     pricePerKg: Number(v.pricePerKg), saleUnit: v.saleUnit as CatalogProductInput['saleUnit'],
     status: v.status as CatalogProductInput['status'], productType: v.productType as CatalogProductInput['productType'],
-    stockQuantity: v.stockQuantity === '' ? null : Number(v.stockQuantity), imageUrl: v.imageUrl || null,
+    stockQuantity: v.stockQuantity === '' ? null : Number(v.stockQuantity) / (v.saleUnit === 'kg' ? 1000 : 1), imageUrl: v.imageUrl || null,
     promoPrice: v.promoPrice === '' ? null : Number(v.promoPrice), promoLabel: v.promoLabel || null,
     promoStartsAt: v.promoStartsAt ? new Date(v.promoStartsAt).toISOString() : null,
     promoEndsAt: v.promoEndsAt ? new Date(v.promoEndsAt).toISOString() : null,
@@ -68,9 +71,9 @@ export function CatalogPage() {
     {formOpen && <section className="admin-editor" data-testid="panel-product-editor"><header><div><small>{editing ? 'EDIÇÃO DO CATÁLOGO' : 'NOVO CADASTRO'}</small><h2>{editing ? 'Editar produto' : 'Adicionar ao catálogo'}</h2></div><button className="icon-button" onClick={()=>setFormOpen(false)} aria-label="Fechar formulário" data-testid="button-product-form-close"><X size={17}/></button></header>
       <Form {...form}><form onSubmit={form.handleSubmit(save)} className="admin-form">
         <label>Nome do produto<input className={inputClass} {...form.register('name',{required:true})} data-testid="input-product-name"/></label><label>Categoria<input className={inputClass} {...form.register('category',{required:true})} list="catalog-categories" data-testid="input-product-category"/><datalist id="catalog-categories">{categories.map(c=><option key={c} value={c}/>)}</datalist></label>
-        <label>{form.watch('saleUnit') === 'unidade' ? 'Preço por unidade' : 'Preço por kg'}<input className={inputClass} type="number" min="0" step="0.01" {...form.register('pricePerKg',{required:true})} data-testid="input-product-price"/></label><label>Unidade de venda<select className={inputClass} {...form.register('saleUnit')} data-testid="select-product-unit"><option value="kg">Quilo (kg)</option><option value="g">Grama (g)</option><option value="unidade">Unidade</option></select></label>
+        <label>{saleUnit === 'unidade' ? 'Preço por unidade' : 'Preço por kg'}<input className={inputClass} type="number" min="0" step="0.01" {...form.register('pricePerKg',{required:true})} data-testid="input-product-price"/></label><label>Unidade de venda<select className={inputClass} {...saleUnitField} onChange={(event) => { const previousUnit = form.getValues('saleUnit'); saleUnitField.onChange(event); const nextUnit = event.target.value; if ((previousUnit === 'unidade') !== (nextUnit === 'unidade')) form.setValue('stockQuantity', '', { shouldDirty: true }); }} data-testid="select-product-unit"><option value="kg">Quilo (kg)</option><option value="g">Grama (g)</option><option value="unidade">Unidade</option></select></label>
         <label>Tipo<select className={inputClass} {...form.register('productType')} data-testid="select-product-type"><option value="product">Produto</option><option value="combo">Combo</option></select></label><label>Status<select className={inputClass} {...form.register('status')} data-testid="select-product-status"><option value="active">Disponível</option><option value="inactive">Inativo</option><option value="sold_out">Esgotado</option></select></label>
-        <label>Estoque opcional<input className={inputClass} type="number" min="0" step="0.01" {...form.register('stockQuantity')} data-testid="input-product-stock"/></label><label>Imagem por URL<input className={inputClass} type="url" placeholder="https://" {...form.register('imageUrl')} data-testid="input-product-image-url"/></label>
+        <label>Estoque opcional{saleUnit === 'unidade' ? <input className={inputClass} type="number" min="0" step="1" {...form.register('stockQuantity')} data-testid="input-product-stock"/> : <GramsInput value={form.watch('stockQuantity')} onChange={(value) => form.setValue('stockQuantity', value, { shouldDirty: true })} ariaLabel="Estoque em gramas" testId="input-product-stock" className="admin-grams-input" />}</label><label>Imagem por URL<input className={inputClass} type="url" placeholder="https://" {...form.register('imageUrl')} data-testid="input-product-image-url"/></label>
         <label className="admin-span">Descrição<textarea className={inputClass} rows={2} {...form.register('description')} data-testid="input-product-description"/></label>
         <div className="admin-subhead">Oferta opcional</div><label>Preço promocional<input className={inputClass} type="number" min="0" step="0.01" {...form.register('promoPrice')} data-testid="input-product-promo-price"/></label><label>Identificação da oferta<input className={inputClass} {...form.register('promoLabel')} data-testid="input-product-promo-label"/></label><label>Início<input className={inputClass} type="datetime-local" {...form.register('promoStartsAt')} data-testid="input-product-promo-start"/></label><label>Fim<input className={inputClass} type="datetime-local" {...form.register('promoEndsAt')} data-testid="input-product-promo-end"/></label>
         <div className="admin-span admin-form-actions"><button type="button" className="button button-outline" onClick={()=>setFormOpen(false)} data-testid="button-product-cancel">Cancelar</button><button className="button button-dark" disabled={create.isPending||update.isPending} data-testid="button-product-save"><Save size={15}/>{create.isPending||update.isPending?'Salvando…':'Salvar produto'}</button></div>

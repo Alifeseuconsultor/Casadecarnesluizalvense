@@ -24,6 +24,7 @@ import {
   ShoppingCart,
   X,
 } from 'lucide-react';
+import { GramsInput } from '@/components/grams-input';
 import logo from '@assets/image_1794603595147.png';
 import './storefront.css';
 
@@ -49,6 +50,12 @@ const livePrice = (product: CatalogProduct) => {
 const quantityStep = (product: CatalogProduct) => product.productType === 'combo' || product.saleUnit === 'unidade'
   ? 1
   : product.saleUnit === 'g' ? 100 : 0.25;
+const isWeightProduct = (product: CatalogProduct) =>
+  product.productType !== 'combo' && (product.saleUnit === 'kg' || product.saleUnit === 'g');
+const quantityInGrams = (product: CatalogProduct, quantity: number) =>
+  Math.round(quantity * (product.saleUnit === 'kg' ? 1000 : 1));
+const quantityFromGrams = (product: CatalogProduct, grams: number) =>
+  product.saleUnit === 'kg' ? grams / 1000 : grams;
 
 const slug = (text: string) => text.toLocaleLowerCase('pt-BR')
   .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -140,10 +147,14 @@ function Storefront() {
     });
   }
 
-  function changeQuantity(productId: number, delta: number) {
-    setCart((current) => current
-      .map((line) => line.product.id === productId ? { ...line, quantity: line.quantity + delta } : line)
-      .filter((line) => line.quantity > 0));
+  function setQuantity(product: CatalogProduct, quantity: number) {
+    setCart((current) => {
+      const exists = current.some((line) => line.product.id === product.id);
+      if (!exists) return quantity > 0 ? [...current, { product, quantity }] : current;
+      return current
+        .map((line) => line.product.id === product.id ? { ...line, quantity } : line)
+        .filter((line) => line.quantity > 0);
+    });
     setCreatedOrder(null);
   }
 
@@ -291,13 +302,28 @@ function Storefront() {
           {categoryFilter === 'all' && !search && featuredProducts.length > 0 && <section className="featured-section">
             <div className="section-caption"><span>ESCOLHAS DO AÇOUGUEIRO</span><span>{featuredProducts.length} cortes em destaque</span></div>
             <div className="featured-grid">{featuredProducts.map((product, index) =>
-              <ProductCard key={product.id} product={product} featured={index === 0} onAdd={() => addToCart(product)} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                featured={index === 0}
+                quantity={cart.find((line) => line.product.id === product.id)?.quantity}
+                onAdd={() => addToCart(product)}
+                onSetQuantity={(quantity) => setQuantity(product, quantity)}
+                onRemove={() => removeFromCart(product.id)}
+              />
             )}</div>
           </section>}
           {groupedProducts.map((group) => <section className="product-section" key={group.category} id={`cat-${slug(group.category)}`}>
             <div className="section-caption"><span>{group.category.toLocaleUpperCase('pt-BR')}</span><span>{group.items.length.toString().padStart(2, '0')} cortes</span></div>
             <div className="product-grid">{group.items.map((product) =>
-              <ProductCard key={product.id} product={product} onAdd={() => addToCart(product)} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                quantity={cart.find((line) => line.product.id === product.id)?.quantity}
+                onAdd={() => addToCart(product)}
+                onSetQuantity={(quantity) => setQuantity(product, quantity)}
+                onRemove={() => removeFromCart(product.id)}
+              />
             )}</div>
           </section>)}
         </>}
@@ -310,7 +336,7 @@ function Storefront() {
           validation={validation} createdOrder={createdOrder}
           onName={setCustomerName} onPhone={setPhone} onFulfillment={setFulfillment} onPayment={setPayment}
           onAddress={setDeliveryAddress} onSchedule={setScheduledAt} onNotes={setNotes}
-          onQuantity={changeQuantity} onRemove={removeFromCart} onSubmit={submitOrder}
+          onSetQuantity={setQuantity} onRemove={removeFromCart} onSubmit={submitOrder}
           onDismissSuccess={() => setCreatedOrder(null)}
         />
       </aside>
@@ -343,7 +369,7 @@ function Storefront() {
           validation={validation} createdOrder={createdOrder}
           onName={setCustomerName} onPhone={setPhone} onFulfillment={setFulfillment} onPayment={setPayment}
           onAddress={setDeliveryAddress} onSchedule={setScheduledAt} onNotes={setNotes}
-          onQuantity={changeQuantity} onRemove={removeFromCart} onSubmit={(event) => { submitOrder(event); }}
+          onSetQuantity={setQuantity} onRemove={removeFromCart} onSubmit={(event) => { submitOrder(event); }}
           onDismissSuccess={() => setCreatedOrder(null)}
         />
       </section>
@@ -369,7 +395,21 @@ function StoreHeader({ cartCount, onCart }: { cartCount: number; onCart: () => v
   </header>;
 }
 
-function ProductCard({ product, featured = false, onAdd }: { product: CatalogProduct; featured?: boolean; onAdd: () => void }) {
+function ProductCard({
+  product,
+  featured = false,
+  quantity,
+  onAdd,
+  onSetQuantity,
+  onRemove,
+}: {
+  product: CatalogProduct;
+  featured?: boolean;
+  quantity?: number;
+  onAdd: () => void;
+  onSetQuantity: (quantity: number) => void;
+  onRemove: () => void;
+}) {
   const price = livePrice(product);
   const unavailable = product.status === 'sold_out';
   const consultOnly = Boolean(product.editorial?.priceOnRequest);
@@ -409,12 +449,105 @@ function ProductCard({ product, featured = false, onAdd }: { product: CatalogPro
             <strong>{currency(price)}</strong><small>por {unitLabel}</small>
           </>}
         </div>
-        <button className="add-product" onClick={onAdd} disabled={unavailable || consultOnly} aria-label={unavailable ? `${product.name} esgotado` : consultOnly ? `Consultar ${product.name} no balcão` : `Adicionar ${product.name} ao pedido`} title={consultOnly ? 'Disponível para consulta no balcão' : unavailable ? 'Indisponível' : 'Adicionar ao pedido'} data-testid={`button-add-store-product-${product.id}`}>
-          {unavailable || consultOnly ? <span>{unavailable ? 'Indisponível' : 'Consultar'}</span> : <><Plus size={17} /><span>Adicionar</span></>}
-        </button>
+        {!unavailable && !consultOnly && (isWeightProduct(product) || quantity != null) ? (
+          <QuantityStepper
+            product={product}
+            quantity={quantity ?? 0}
+            onSetQuantity={onSetQuantity}
+            onRemove={onRemove}
+            context="product"
+          />
+        ) : (
+          <button className="add-product" onClick={onAdd} disabled={unavailable || consultOnly} aria-label={unavailable ? `${product.name} esgotado` : consultOnly ? `Consultar ${product.name} no balcão` : `Adicionar ${product.name} ao pedido`} title={consultOnly ? 'Disponível para consulta no balcão' : unavailable ? 'Indisponível' : 'Adicionar ao pedido'} data-testid={`button-add-store-product-${product.id}`}>
+            {unavailable || consultOnly ? <span>{unavailable ? 'Indisponível' : 'Consultar'}</span> : <><Plus size={17} /><span>Adicionar</span></>}
+          </button>
+        )}
       </div>
     </div>
   </article>;
+}
+
+function QuantityStepper({
+  product,
+  quantity,
+  onSetQuantity,
+  onRemove,
+  context,
+}: {
+  product: CatalogProduct;
+  quantity: number;
+  onSetQuantity: (quantity: number) => void;
+  onRemove: () => void;
+  context: 'product' | 'cart';
+}) {
+  const weighted = isWeightProduct(product);
+  const grams = weighted ? quantityInGrams(product, quantity) : 0;
+  const [draft, setDraft] = useState(String(grams));
+
+  useEffect(() => {
+    if (weighted) setDraft(String(grams));
+  }, [grams, weighted]);
+
+  const decrement = () => {
+    if (!weighted) {
+      quantity > quantityStep(product)
+        ? onSetQuantity(quantity - quantityStep(product))
+        : onRemove();
+      return;
+    }
+    const step = product.saleUnit === 'g' ? 100 : 250;
+    grams > step ? onSetQuantity(quantityFromGrams(product, grams - step)) : onRemove();
+  };
+
+  const increment = () => {
+    if (weighted) {
+      const step = product.saleUnit === 'g' ? 100 : 250;
+      onSetQuantity(quantityFromGrams(product, grams + step));
+    } else {
+      onSetQuantity(quantity + quantityStep(product));
+    }
+  };
+
+  const changeGrams = (value: string) => {
+    setDraft(value);
+    const parsed = Number(value);
+    if (value !== '' && Number.isFinite(parsed) && parsed > 0) {
+      onSetQuantity(quantityFromGrams(product, parsed));
+    }
+  };
+
+  const commitGrams = () => {
+    const parsed = Number(draft);
+    if (!draft || !Number.isFinite(parsed) || parsed <= 0) {
+      onRemove();
+      return;
+    }
+    onSetQuantity(quantityFromGrams(product, parsed));
+    setDraft(String(parsed));
+  };
+
+  return (
+    <div className={`quantity-stepper ${context === 'product' ? 'product-quantity-stepper' : 'cart-quantity-stepper'}`}>
+      <button type="button" aria-label={`Diminuir ${product.name}`} disabled={quantity <= 0} onClick={decrement} data-testid={`button-decrease-${context}-${product.id}`}>
+        <Minus size={13} />
+      </button>
+      {weighted ? (
+        <GramsInput
+          value={draft}
+          onChange={changeGrams}
+          onBlur={commitGrams}
+          ariaLabel={`Peso de ${product.name} em gramas`}
+          testId={`input-quantity-grams-${context}-${product.id}`}
+          className="store-grams-input"
+        />
+      ) : (
+        <span>{quantity.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {product.productType === 'combo' ? 'kit' : product.saleUnit}</span>
+      )}
+      <button type="button" aria-label={`Adicionar mais ${product.name}`} onClick={increment} data-testid={`button-increase-${context}-${product.id}`}>
+        <Plus size={13} />
+      </button>
+    </div>
+  );
 }
 
 type OrderPanelProps = {
@@ -441,7 +574,7 @@ type OrderPanelProps = {
   onAddress: (value: string) => void;
   onSchedule: (value: string) => void;
   onNotes: (value: string) => void;
-  onQuantity: (id: number, delta: number) => void;
+  onSetQuantity: (product: CatalogProduct, quantity: number) => void;
   onRemove: (id: number) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onDismissSuccess: () => void;
@@ -451,7 +584,7 @@ function OrderPanel(props: OrderPanelProps) {
   const {
     cart, itemCount, total, name, phone, fulfillment, payment, address, scheduledAt, notes,
     settings, services, payments, busy, validation, createdOrder, onName, onPhone, onFulfillment,
-    onPayment, onAddress, onSchedule, onNotes, onQuantity, onRemove, onSubmit, onDismissSuccess,
+    onPayment, onAddress, onSchedule, onNotes, onSetQuantity, onRemove, onSubmit, onDismissSuccess,
   } = props;
   const requestOnly = cart.some((line) => line.product.editorial?.priceOnRequest);
   return <div className="order-panel">
@@ -476,9 +609,13 @@ function OrderPanel(props: OrderPanelProps) {
         {cart.map(({ product, quantity }) => <div className="cart-line" key={product.id}>
           <div className="cart-line-name"><strong>{product.name}</strong><span>{currency(livePrice(product))} / {product.productType === 'combo' ? 'kit' : product.saleUnit}</span></div>
           <div className="cart-line-controls">
-            <button aria-label={`Diminuir ${product.name}`} onClick={() => quantity > quantityStep(product) ? onQuantity(product.id, -quantityStep(product)) : onRemove(product.id)} data-testid={`button-decrease-cart-${product.id}`}><Minus size={13} /></button>
-            <span>{quantity.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {product.productType === 'combo' ? 'kit' : product.saleUnit}</span>
-            <button aria-label={`Adicionar mais ${product.name}`} onClick={() => onQuantity(product.id, quantityStep(product))} data-testid={`button-increase-cart-${product.id}`}><Plus size={13} /></button>
+            <QuantityStepper
+              product={product}
+              quantity={quantity}
+              onSetQuantity={(next) => onSetQuantity(product, next)}
+              onRemove={() => onRemove(product.id)}
+              context="cart"
+            />
             <strong>{currency(quantity * (product.saleUnit === 'g' && product.productType !== 'combo' ? livePrice(product) / 1000 : livePrice(product)))}</strong>
           </div>
         </div>)}

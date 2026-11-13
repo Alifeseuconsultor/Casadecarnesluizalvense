@@ -145,6 +145,19 @@
 .add-product { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 5px; min-height: 32px; padding: 0 9px; border: 1px solid var(--store-line-strong); color: var(--store-ink); background: transparent; font-size: 9px; letter-spacing: .06em; transition: color .2s, background .2s, border-color .2s; }
 .add-product:hover:not(:disabled) { border-color: var(--store-brass); color: var(--store-bg); background: var(--store-brass); }
 .add-product span { white-space: nowrap; }
+.quantity-stepper { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+.quantity-stepper button { display: grid; width: 24px; height: 27px; flex: 0 0 24px; place-items: center; border: 1px solid var(--store-line-strong); color: var(--store-soft); background: transparent; }
+.quantity-stepper button:hover { border-color: var(--store-brass); color: var(--store-brass-light); }
+.quantity-stepper button:disabled { cursor: not-allowed; opacity: .35; }
+.quantity-stepper > span { min-width: 22px; color: var(--store-ink); font: 9px var(--store-mono); text-align: center; }
+.product-foot { flex-wrap: wrap; }
+.product-quantity-stepper { flex: 0 0 auto; flex-wrap: nowrap; justify-content: flex-end; }
+.store-grams-input { width: 68px; flex: 0 0 auto; gap: 3px; }
+.store-grams-input input { width: 47px; min-height: 27px; flex: 1 1 40px; padding: 0 4px; border: 1px solid var(--store-line-strong); border-radius: 0; color: var(--store-ink); background: rgba(16, 13, 9, .55); font: 9px var(--store-mono); text-align: right; }
+.store-grams-input > span { color: var(--store-muted); font: 8px var(--store-mono); }
+.store-grams-input > small { flex-basis: 100%; color: var(--store-muted); font: 7px var(--store-mono); text-align: center; }
+.product-quantity-stepper .store-grams-input { width: 61px; }
+.product-quantity-stepper .store-grams-input input { width: 40px; }
 .combo-card .product-art { background: linear-gradient(135deg, rgba(140, 42, 26, .4), rgba(58, 42, 27, .8)), repeating-linear-gradient(45deg, transparent 0 11px, rgba(217, 166, 90, .1) 12px, transparent 13px 24px); }
 
 .order-sidebar { position: sticky; top: 96px; min-width: 0; max-height: calc(100dvh - 110px); overflow: auto; border: 1px solid var(--store-line-strong); background: var(--store-panel); scrollbar-width: thin; scrollbar-color: var(--store-brass) transparent; }
@@ -166,6 +179,9 @@
 .cart-line-controls button:hover { color: var(--store-brass-light); border-color: var(--store-brass); }
 .cart-line-controls > span { min-width: 15px; color: var(--store-ink); font: 10px var(--store-mono); text-align: center; }
 .cart-line-controls > strong { margin-left: auto; color: var(--store-soft); font: 11px var(--store-mono); }
+.cart-quantity-stepper { flex: 0 0 auto; gap: 5px; }
+.cart-quantity-stepper .store-grams-input { width: 75px; }
+.cart-quantity-stepper .store-grams-input input { width: 52px; }
 .cart-total { display: flex; justify-content: space-between; gap: 8px; padding: 13px 0; border-bottom: 1px solid var(--store-line); color: var(--store-muted); font-size: 9px; text-transform: uppercase; letter-spacing: .09em; }
 .cart-total strong { color: var(--store-brass-light); font: 500 19px var(--store-serif); letter-spacing: 0; }
 .order-form { display: grid; gap: 12px; padding-top: 16px; }

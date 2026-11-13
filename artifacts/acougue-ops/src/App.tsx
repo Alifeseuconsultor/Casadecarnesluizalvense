@@ -16,6 +16,7 @@ import {
   useUpdateOrderStatus,
 } from '@workspace/api-client-react';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { GramsInput } from '@/components/grams-input';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import {
@@ -71,8 +72,8 @@ function Home() {
   const [notice, setNotice] = useState('');
   const [orderForm, setOrderForm] = useState({
     customerId: '', customerName: '', phone: '', serviceType: 'pickup', address: '',
-    paymentMethod: 'pix', scheduledAt: '', notes: '', selectedProduct: '', quantity: '1',
-    unit: 'kg', cut: '', thickness: '', fatTrim: '', observations: '',
+    paymentMethod: 'pix', scheduledAt: '', notes: '', selectedProduct: '', quantity: '0',
+    unit: 'g', cut: '', thickness: '', fatTrim: '', observations: '',
   });
   const [cart, setCart] = useState<Array<{ productId: number; productName: string; quantity: number; unit: string; pricePerKg: number; cutPreference: string; thickness: string; fatTrim: string; observations: string; estimatedWeightKg: number | null }>>([]);
   const audioRef = useRef<AudioContext | null>(null);
@@ -150,16 +151,18 @@ function Home() {
   const selectedProduct = products.find((p) => p.id === Number(orderForm.selectedProduct));
   const addProduct = () => {
     if (!selectedProduct) return;
-    const quantity = Number(orderForm.quantity);
+    const enteredQuantity = Number(orderForm.quantity);
+    const isWeight = orderForm.unit === 'kg' || orderForm.unit === 'g';
+    const quantity = orderForm.unit === 'kg' ? enteredQuantity / 1000 : enteredQuantity;
     if (!Number.isFinite(quantity) || quantity <= 0) return;
     setCart((current) => [...current, {
       productId: selectedProduct.id, productName: selectedProduct.name, quantity,
       unit: orderForm.unit, pricePerKg: currentCatalogPrice(selectedProduct),
       cutPreference: orderForm.cut, thickness: orderForm.thickness, fatTrim: orderForm.fatTrim,
       observations: orderForm.observations,
-      estimatedWeightKg: orderForm.unit === 'kg' ? quantity : orderForm.unit === 'g' ? quantity / 1000 : null,
+      estimatedWeightKg: isWeight ? enteredQuantity / 1000 : null,
     }]);
-    setOrderForm((f) => ({ ...f, selectedProduct: '', quantity: '1', cut: '', thickness: '', fatTrim: '', observations: '' }));
+    setOrderForm((f) => ({ ...f, selectedProduct: '', quantity: f.unit === 'unidade' ? '1' : '0', cut: '', thickness: '', fatTrim: '', observations: '' }));
   };
   const submitOrder = async () => {
     if (!cart.length) return;
@@ -192,7 +195,7 @@ function Home() {
       onSuccess: (created) => {
         invalidateOrders();
         setActiveStage('new'); setSelectedId(created.id); setCart([]); setCreateOpen(false);
-        setOrderForm({ customerId: '', customerName: '', phone: '', serviceType: 'pickup', address: '', paymentMethod: 'pix', scheduledAt: '', notes: '', selectedProduct: '', quantity: '1', unit: 'kg', cut: '', thickness: '', fatTrim: '', observations: '' });
+        setOrderForm({ customerId: '', customerName: '', phone: '', serviceType: 'pickup', address: '', paymentMethod: 'pix', scheduledAt: '', notes: '', selectedProduct: '', quantity: '0', unit: 'g', cut: '', thickness: '', fatTrim: '', observations: '' });
       },
       onError: () => { setNotice('Falha ao criar pedido. Confira os dados e tente novamente.'); window.setTimeout(() => setNotice(''), 4500); },
     });
@@ -286,11 +289,11 @@ function Home() {
             <label className="field-label">Horário combinado<input type="datetime-local" value={orderForm.scheduledAt} onChange={(e) => setOrderForm((f) => ({ ...f, scheduledAt: e.target.value }))} data-testid="input-scheduled-at" /></label>
           </div>
           <div className="form-section"><div className="section-heading"><span>02</span><h3>Itens e preferências</h3></div>
-            <div className="field-pair product-row"><label className="field-label">Produto do catálogo<select value={orderForm.selectedProduct} onChange={(e) => { const chosen = products.find((p) => p.id === Number(e.target.value)); setOrderForm((f) => ({ ...f, selectedProduct: e.target.value, ...(chosen ? { unit: chosen.saleUnit } : {}) })); }} data-testid="select-catalog-product"><option value="">Escolha um corte</option>{products.map((p) => <option value={p.id} key={p.id}>{p.name} · {brl(currentCatalogPrice(p))}/{p.saleUnit}</option>)}</select></label><label className="field-label narrow-field">Quantidade<input type="number" min="0.01" step="0.01" value={orderForm.quantity} onChange={(e) => setOrderForm((f) => ({ ...f, quantity: e.target.value }))} data-testid="input-item-quantity" /></label><label className="field-label unit-field">Unidade<select value={orderForm.unit} onChange={(e) => setOrderForm((f) => ({ ...f, unit: e.target.value }))} data-testid="select-item-unit"><option value="kg">kg</option><option value="g">g</option><option value="unidade">unid.</option></select></label></div>
+            <div className="field-pair product-row"><label className="field-label">Produto do catálogo<select value={orderForm.selectedProduct} onChange={(e) => { const chosen = products.find((p) => p.id === Number(e.target.value)); const unit = chosen?.productType === 'combo' || chosen?.saleUnit === 'unidade' ? 'unidade' : 'g'; setOrderForm((f) => ({ ...f, selectedProduct: e.target.value, ...(chosen ? { unit, quantity: unit === 'unidade' ? '1' : '0' } : {}) })); }} data-testid="select-catalog-product"><option value="">Escolha um corte</option>{products.map((p) => <option value={p.id} key={p.id}>{p.name} · {brl(currentCatalogPrice(p))}/{p.saleUnit}</option>)}</select></label><label className="field-label narrow-field">{orderForm.unit === 'unidade' ? 'Quantidade' : 'Peso em gramas'}{orderForm.unit === 'unidade' ? <input type="number" min="1" step="1" value={orderForm.quantity} onChange={(e) => setOrderForm((f) => ({ ...f, quantity: e.target.value }))} data-testid="input-item-quantity" /> : <GramsInput value={orderForm.quantity} onChange={(value) => setOrderForm((f) => ({ ...f, quantity: value }))} ariaLabel="Peso do item em gramas" testId="input-item-quantity" className="order-grams-input" />}</label><label className="field-label unit-field">Unidade<span className="order-unit-value">{orderForm.unit === 'unidade' ? 'unid.' : 'g'}</span></label></div>
             <div className="field-pair"><label className="field-label">Corte / preparo<input value={orderForm.cut} onChange={(e) => setOrderForm((f) => ({ ...f, cut: e.target.value }))} placeholder="Ex.: bifes, cubos" data-testid="input-cut-preference" /></label><label className="field-label">Espessura<input value={orderForm.thickness} onChange={(e) => setOrderForm((f) => ({ ...f, thickness: e.target.value }))} placeholder="Ex.: 2 cm" data-testid="input-thickness" /></label></div>
             <div className="field-pair"><label className="field-label">Gordura<input value={orderForm.fatTrim} onChange={(e) => setOrderForm((f) => ({ ...f, fatTrim: e.target.value }))} placeholder="Ex.: retirar excesso" data-testid="input-fat-trim" /></label><label className="field-label">Observação do item<input value={orderForm.observations} onChange={(e) => setOrderForm((f) => ({ ...f, observations: e.target.value }))} placeholder="Instrução para a equipe" data-testid="input-item-observations" /></label></div>
             <button className="add-item-button" onClick={addProduct} disabled={!selectedProduct} data-testid="button-add-item"><Plus size={16} /> Adicionar item</button>
-            {cart.length > 0 && <div className="cart-items">{cart.map((item, index) => <div className="cart-item" key={`${item.productId}-${index}`}><div><strong>{item.productName}</strong><small>{item.quantity} {item.unit}{item.cutPreference ? ` · ${item.cutPreference}` : ''}</small></div><span>{item.estimatedWeightKg ? brl(item.estimatedWeightKg * item.pricePerKg) : `${brl(item.pricePerKg)}/kg`}</span><button aria-label={`Remover ${item.productName}`} onClick={() => setCart((current) => current.filter((_, i) => i !== index))} data-testid={`button-remove-cart-item-${index}`}><Minus size={14} /></button></div>)}</div>}
+            {cart.length > 0 && <div className="cart-items">{cart.map((item, index) => <div className="cart-item" key={`${item.productId}-${index}`}><div><strong>{item.productName}</strong><small>{item.estimatedWeightKg != null ? `${Math.round(item.estimatedWeightKg * 1000).toLocaleString('pt-BR')} g (${item.estimatedWeightKg.toLocaleString('pt-BR')} kg)` : `${item.quantity} ${item.unit}`}{item.cutPreference ? ` · ${item.cutPreference}` : ''}</small></div><span>{item.estimatedWeightKg != null ? brl(item.estimatedWeightKg * item.pricePerKg) : `${brl(item.pricePerKg)}/unid.`}</span><button aria-label={`Remover ${item.productName}`} onClick={() => setCart((current) => current.filter((_, i) => i !== index))} data-testid={`button-remove-cart-item-${index}`}><Minus size={14} /></button></div>)}</div>}
           </div>
           <div className="form-section"><div className="section-heading"><span>03</span><h3>Recado para a bancada</h3></div><textarea value={orderForm.notes} onChange={(e) => setOrderForm((f) => ({ ...f, notes: e.target.value }))} placeholder="Observações gerais do pedido" rows={2} data-testid="input-order-notes" /></div>
           <div className="estimate-note">Valores estimados. O total é recalculado após o registro dos pesos finais. Nenhum pagamento é iniciado por esta tela.</div>
@@ -367,13 +370,58 @@ function OrderDetails({ order, onAdvance, busy, onPrepared, onWeight }: { order:
     <div className="detail-items">{order.items.map((item) => <div className={`detail-item ${item.prepared ? 'item-prepared' : ''}`} key={item.id} data-testid={`item-order-${order.id}-${item.id}`}>
       <div className="item-heading"><button className={`check-item ${item.prepared ? 'checked' : ''}`} onClick={() => onPrepared(item.id, !item.prepared)} aria-label={item.prepared ? 'Desmarcar como preparado' : 'Marcar como preparado'} data-testid={`button-prepared-${item.id}`}>{item.prepared && <Check size={14} />}</button><div className="item-title"><strong>{item.productName}</strong><span>{item.estimatedWeightKg ? `${item.estimatedWeightKg.toLocaleString('pt-BR')} kg estimados` : `${item.quantity} ${item.unit}`}</span></div><span className="item-subtotal">{brl(item.finalSubtotal ?? item.estimatedSubtotal)}</span></div>
       {(item.cutPreference || item.thickness || item.fatTrim || item.observations) && <div className="preference-list">{item.cutPreference && <span><b>Corte</b>{item.cutPreference}</span>}{item.thickness && <span><b>Espessura</b>{item.thickness}</span>}{item.fatTrim && <span><b>Gordura</b>{item.fatTrim}</span>}{item.observations && <span><b>Nota</b>{item.observations}</span>}</div>}
-      {item.estimatedWeightKg != null && <div className="weight-entry"><label htmlFor={`weight-${item.id}`}>Peso final</label><div><input id={`weight-${item.id}`} type="number" inputMode="decimal" min="0.001" step="0.001" placeholder={item.actualWeightKg?.toString() ?? '0,000'} value={weights[item.id] ?? ''} onChange={(e) => setWeights((prev) => ({ ...prev, [item.id]: e.target.value }))} data-testid={`input-final-weight-${item.id}`} /><span>kg</span><button disabled={busy || !Number(weights[item.id])} onClick={() => { const value = Number(weights[item.id]); if (value > 0) { onWeight(item.id, value); setWeights((prev) => ({ ...prev, [item.id]: '' })); } }} data-testid={`button-save-weight-${item.id}`}>Registrar</button></div>{item.actualWeightKg != null && <small>Registrado: {item.actualWeightKg.toLocaleString('pt-BR')} kg</small>}</div>}
+      {item.estimatedWeightKg != null && <FinalWeightInput
+        itemId={item.id}
+        actualWeightKg={item.actualWeightKg}
+        value={weights[item.id]}
+        busy={busy}
+        onChange={(value) => setWeights((prev) => ({ ...prev, [item.id]: value }))}
+        onSave={(weightKg) => onWeight(item.id, weightKg)}
+      />}
     </div>)}</div>
     {order.notes && <div className="order-notes"><span>RECADO DO PEDIDO</span><p>{order.notes}</p></div>}
     <div className="price-summary"><div><span>Estimativa inicial</span><strong>{brl(order.estimatedTotal)}</strong></div><div><span>Subtotal após pesos</span><strong>{brl(actualTotal)}</strong></div>{order.finalTotal != null && <div className="adjustment-line"><span>{adjustment > 0 ? 'Diferença a cobrar' : adjustment < 0 ? 'Diferença a ajustar' : 'Sem diferença'} <small>(sem cobrança nesta tela)</small></span><strong>{adjustment > 0 ? '+' : ''}{brl(adjustment)}</strong></div>}<div className="total-line"><span>{order.finalTotal != null ? 'Total final' : 'Total estimado'}</span><strong>{brl(order.finalTotal ?? order.estimatedTotal)}</strong></div></div>
     <div className="payment-note"><CreditCard size={15} /><span>Pagamento: <b>{({ pix: 'Pix', card: 'Cartão', cash: 'Dinheiro', on_delivery: 'Na entrega' } as Record<string, string>)[order.paymentMethod]}</b> · {order.paymentStatus === 'paid' ? 'Pago' : 'Pendente'}<small>Registro operacional apenas. Nenhuma transação é iniciada.</small></span></div>
     <button className="detail-advance" onClick={onAdvance} disabled={busy || order.status === 'completed'} data-testid={`button-detail-advance-${order.id}`}>{order.status === 'new' ? 'Começar preparo' : order.status === 'preparing' ? 'Pedido pronto para retirada' : order.status === 'ready' ? 'Concluir pedido' : 'Pedido concluído'} <ArrowRight size={16} /></button>
   </aside>;
+}
+
+function FinalWeightInput({
+  itemId,
+  actualWeightKg,
+  value,
+  busy,
+  onChange,
+  onSave,
+}: {
+  itemId: number;
+  actualWeightKg: number | null;
+  value?: string;
+  busy: boolean;
+  onChange: (value: string) => void;
+  onSave: (weightKg: number) => void;
+}) {
+  const grams = value ?? (actualWeightKg == null ? '0' : String(Math.round(actualWeightKg * 1000)));
+  const numericGrams = Number(grams);
+  return (
+    <div className="weight-entry">
+      <label htmlFor={`weight-${itemId}`}>Peso final</label>
+      <div>
+        <GramsInput
+          id={`weight-${itemId}`}
+          value={grams}
+          onChange={onChange}
+          ariaLabel="Peso final em gramas"
+          testId={`input-final-weight-${itemId}`}
+          className="weight-entry-grams-input"
+        />
+        <button disabled={busy || !Number.isFinite(numericGrams) || numericGrams <= 0} onClick={() => onSave(numericGrams / 1000)} data-testid={`button-save-weight-${itemId}`}>
+          Registrar
+        </button>
+      </div>
+      {actualWeightKg != null && <small>Registrado: {actualWeightKg.toLocaleString('pt-BR')} kg</small>}
+    </div>
+  );
 }
 
 function Router() {
