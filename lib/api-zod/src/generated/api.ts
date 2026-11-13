@@ -435,6 +435,14 @@ export const UpdateCustomerResponse = zod.object({
 /**
  * @summary Consultar catálogo compartilhado de produtos ativos
  */
+export const listCatalogResponseEditorialOneMarblingMax = 5;
+
+export const listCatalogResponseEditorialOneTendernessMax = 5;
+
+export const listCatalogResponseEditorialOneSavingsMin = 0;
+
+
+
 export const ListCatalogResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
@@ -451,6 +459,21 @@ export const ListCatalogResponseItem = zod.object({
   "promoLabel": zod.string().nullable(),
   "promoStartsAt": zod.coerce.date().nullable(),
   "promoEndsAt": zod.coerce.date().nullable(),
+  "editorial": zod.union([zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(listCatalogResponseEditorialOneMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(listCatalogResponseEditorialOneTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(listCatalogResponseEditorialOneSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}),zod.null()]),
   "demo": zod.boolean()
 })
 export const ListCatalogResponse = zod.array(ListCatalogResponseItem)
@@ -459,6 +482,14 @@ export const ListCatalogResponse = zod.array(ListCatalogResponseItem)
 /**
  * @summary Listar catálogo completo para administração
  */
+export const listAdminCatalogResponseEditorialOneMarblingMax = 5;
+
+export const listAdminCatalogResponseEditorialOneTendernessMax = 5;
+
+export const listAdminCatalogResponseEditorialOneSavingsMin = 0;
+
+
+
 export const ListAdminCatalogResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
@@ -475,6 +506,21 @@ export const ListAdminCatalogResponseItem = zod.object({
   "promoLabel": zod.string().nullable(),
   "promoStartsAt": zod.coerce.date().nullable(),
   "promoEndsAt": zod.coerce.date().nullable(),
+  "editorial": zod.union([zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(listAdminCatalogResponseEditorialOneMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(listAdminCatalogResponseEditorialOneTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(listAdminCatalogResponseEditorialOneSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}),zod.null()]),
   "demo": zod.boolean()
 })
 export const ListAdminCatalogResponse = zod.array(ListAdminCatalogResponseItem)
@@ -491,6 +537,12 @@ export const createCatalogProductBodyStockQuantityMin = 0;
 
 export const createCatalogProductBodyPromoPriceMin = 0;
 
+export const createCatalogProductBodyEditorialMarblingMax = 5;
+
+export const createCatalogProductBodyEditorialTendernessMax = 5;
+
+export const createCatalogProductBodyEditorialSavingsMin = 0;
+
 
 
 export const CreateCatalogProductBody = zod.object({
@@ -506,8 +558,31 @@ export const CreateCatalogProductBody = zod.object({
   "promoPrice": zod.number().min(createCatalogProductBodyPromoPriceMin).nullish(),
   "promoLabel": zod.string().nullish(),
   "promoStartsAt": zod.coerce.date().nullish(),
-  "promoEndsAt": zod.coerce.date().nullish()
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "editorial": zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(createCatalogProductBodyEditorialMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(createCatalogProductBodyEditorialTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(createCatalogProductBodyEditorialSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}).optional()
 })
+
+export const createCatalogProductResponseEditorialOneMarblingMax = 5;
+
+export const createCatalogProductResponseEditorialOneTendernessMax = 5;
+
+export const createCatalogProductResponseEditorialOneSavingsMin = 0;
+
+
 
 export const CreateCatalogProductResponse = zod.object({
   "id": zod.number().int(),
@@ -525,6 +600,21 @@ export const CreateCatalogProductResponse = zod.object({
   "promoLabel": zod.string().nullable(),
   "promoStartsAt": zod.coerce.date().nullable(),
   "promoEndsAt": zod.coerce.date().nullable(),
+  "editorial": zod.union([zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(createCatalogProductResponseEditorialOneMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(createCatalogProductResponseEditorialOneTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(createCatalogProductResponseEditorialOneSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}),zod.null()]),
   "demo": zod.boolean()
 })
 
@@ -544,6 +634,12 @@ export const updateCatalogProductBodyStockQuantityMin = 0;
 
 export const updateCatalogProductBodyPromoPriceMin = 0;
 
+export const updateCatalogProductBodyEditorialMarblingMax = 5;
+
+export const updateCatalogProductBodyEditorialTendernessMax = 5;
+
+export const updateCatalogProductBodyEditorialSavingsMin = 0;
+
 
 
 export const UpdateCatalogProductBody = zod.object({
@@ -559,8 +655,31 @@ export const UpdateCatalogProductBody = zod.object({
   "promoPrice": zod.number().min(updateCatalogProductBodyPromoPriceMin).nullish(),
   "promoLabel": zod.string().nullish(),
   "promoStartsAt": zod.coerce.date().nullish(),
-  "promoEndsAt": zod.coerce.date().nullish()
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "editorial": zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(updateCatalogProductBodyEditorialMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(updateCatalogProductBodyEditorialTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(updateCatalogProductBodyEditorialSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}).optional()
 })
+
+export const updateCatalogProductResponseEditorialOneMarblingMax = 5;
+
+export const updateCatalogProductResponseEditorialOneTendernessMax = 5;
+
+export const updateCatalogProductResponseEditorialOneSavingsMin = 0;
+
+
 
 export const UpdateCatalogProductResponse = zod.object({
   "id": zod.number().int(),
@@ -578,6 +697,21 @@ export const UpdateCatalogProductResponse = zod.object({
   "promoLabel": zod.string().nullable(),
   "promoStartsAt": zod.coerce.date().nullable(),
   "promoEndsAt": zod.coerce.date().nullable(),
+  "editorial": zod.union([zod.object({
+  "sourceId": zod.string().optional(),
+  "tagline": zod.string().nullish(),
+  "tier": zod.enum(['signature', 'premium', 'classic', 'daily']).optional(),
+  "marbling": zod.number().int().min(1).max(updateCatalogProductResponseEditorialOneMarblingMax).optional(),
+  "tenderness": zod.number().int().min(1).max(updateCatalogProductResponseEditorialOneTendernessMax).optional(),
+  "uses": zod.array(zod.string()).optional(),
+  "badges": zod.array(zod.string()).optional(),
+  "portion": zod.string().nullish(),
+  "pairing": zod.string().nullish(),
+  "serves": zod.string().nullish(),
+  "items": zod.array(zod.string()).optional(),
+  "savings": zod.number().min(updateCatalogProductResponseEditorialOneSavingsMin).nullish(),
+  "priceOnRequest": zod.boolean().optional()
+}),zod.null()]),
   "demo": zod.boolean()
 })
 

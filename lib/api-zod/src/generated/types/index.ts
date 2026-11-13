@@ -7,6 +7,8 @@
  */
 
 export * from './apiError';
+export * from './catalogEditorial';
+export * from './catalogEditorialTier';
 export * from './catalogProduct';
 export * from './catalogProductInput';
 export * from './catalogProductInputProductType';

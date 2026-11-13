@@ -80,6 +80,8 @@ export async function getAllOrderDetails() {
 }
 
 export async function seedDemoData(): Promise<void> {
+  if (process.env.NODE_ENV !== "development") return;
+
   const [existingOrder] = await db.select({ id: ordersTable.id }).from(ordersTable).limit(1);
   if (existingOrder) return;
 

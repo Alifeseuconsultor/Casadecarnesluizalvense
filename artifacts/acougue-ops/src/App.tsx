@@ -28,6 +28,7 @@ import { Route, Switch, useLocation, Router as WouterRouter, Link } from 'wouter
 import type { CatalogProduct, Order } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
 import { CatalogPage, CustomersPage, ReportsPage, SettingsPage } from '@/pages/admin-pages';
+import Storefront from '@/pages/storefront';
 
 const queryClient = new QueryClient();
 const columns = [
@@ -376,7 +377,7 @@ function OrderDetails({ order, onAdvance, busy, onPrepared, onWeight }: { order:
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/catalog">{() => <Shell><CatalogPage /></Shell>}</Route><Route path="/customers">{() => <Shell><CustomersPage /></Shell>}</Route><Route path="/reports">{() => <Shell><ReportsPage /></Shell>}</Route><Route path="/settings">{() => <Shell><SettingsPage /></Shell>}</Route><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/catalog">{() => <Shell><CatalogPage /></Shell>}</Route><Route path="/customers">{() => <Shell><CustomersPage /></Shell>}</Route><Route path="/reports">{() => <Shell><ReportsPage /></Shell>}</Route><Route path="/settings">{() => <Shell><SettingsPage /></Shell>}</Route><Route path="/loja" component={Storefront} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();

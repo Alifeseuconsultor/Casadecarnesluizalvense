@@ -81,6 +81,7 @@ router.post("/orders", async (req, res): Promise<void> => {
               )
               .limit(1);
       if (item.productId != null && !catalogProduct) return undefined;
+      if (catalogProduct?.editorial?.priceOnRequest) return "price_on_request";
       const productName = catalogProduct?.name ?? item.productName;
       const promotionIsValid =
         catalogProduct?.promoPrice != null &&
@@ -154,6 +155,12 @@ router.post("/orders", async (req, res): Promise<void> => {
     return createdOrder;
   });
 
+  if (order === "price_on_request") {
+    res.status(400).json({
+      error: "Este produto precisa de confirmação de preço antes do pedido.",
+    });
+    return;
+  }
   if (!order) {
     res.status(400).json({
       error: "Cliente ou produto não encontrado no catálogo ativo.",
@@ -361,6 +368,7 @@ router.get("/catalog", async (_req, res): Promise<void> => {
       and(
         eq(catalogProductsTable.active, true),
         eq(catalogProductsTable.status, "active"),
+        eq(catalogProductsTable.demo, false),
       ),
     );
   res.json(ListCatalogResponse.parse(products));

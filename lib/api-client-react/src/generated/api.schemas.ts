@@ -67,6 +67,48 @@ export const CatalogProductProductType = {
   combo: 'combo',
 } as const;
 
+export type CatalogEditorialTier = typeof CatalogEditorialTier[keyof typeof CatalogEditorialTier];
+
+
+export const CatalogEditorialTier = {
+  signature: 'signature',
+  premium: 'premium',
+  classic: 'classic',
+  daily: 'daily',
+} as const;
+
+export interface CatalogEditorial {
+  sourceId?: string;
+  /** @nullable */
+  tagline?: string | null;
+  tier?: CatalogEditorialTier;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  marbling?: number;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  tenderness?: number;
+  uses?: string[];
+  badges?: string[];
+  /** @nullable */
+  portion?: string | null;
+  /** @nullable */
+  pairing?: string | null;
+  /** @nullable */
+  serves?: string | null;
+  items?: string[];
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  savings?: number | null;
+  priceOnRequest?: boolean;
+}
+
 export interface CatalogProduct {
   id: number;
   name: string;
@@ -90,6 +132,7 @@ export interface CatalogProduct {
   promoStartsAt: string | null;
   /** @nullable */
   promoEndsAt: string | null;
+  editorial: CatalogEditorial | null;
   demo: boolean;
 }
 
@@ -149,6 +192,7 @@ export interface CatalogProductInput {
   promoStartsAt?: string | null;
   /** @nullable */
   promoEndsAt?: string | null;
+  editorial?: CatalogEditorial;
 }
 
 export type CatalogProductUpdateSaleUnit = typeof CatalogProductUpdateSaleUnit[keyof typeof CatalogProductUpdateSaleUnit];
@@ -207,6 +251,7 @@ export interface CatalogProductUpdate {
   promoStartsAt?: string | null;
   /** @nullable */
   promoEndsAt?: string | null;
+  editorial?: CatalogEditorial;
 }
 
 export interface StoreHours {[key: string]: {

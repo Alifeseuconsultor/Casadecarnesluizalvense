@@ -1,13 +1,32 @@
 import { createInsertSchema } from "drizzle-zod";
 import {
   boolean,
+  jsonb,
   numeric,
   pgTable,
   serial,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { z } from "zod/v4";
+
+export interface CatalogEditorialData {
+  sourceId?: string;
+  tagline?: string | null;
+  tier?: "signature" | "premium" | "classic" | "daily";
+  marbling?: number;
+  tenderness?: number;
+  uses?: string[];
+  badges?: string[];
+  portion?: string | null;
+  pairing?: string | null;
+  serves?: string | null;
+  items?: string[];
+  savings?: number | null;
+  priceOnRequest?: boolean;
+}
 
 // This is the single catalog source for the operational panel and a future customer app.
 export const catalogProductsTable = pgTable("catalog_products", {
@@ -36,8 +55,13 @@ export const catalogProductsTable = pgTable("catalog_products", {
   promoLabel: text("promo_label"),
   promoStartsAt: timestamp("promo_starts_at", { withTimezone: true }),
   promoEndsAt: timestamp("promo_ends_at", { withTimezone: true }),
+  editorial: jsonb("editorial").$type<CatalogEditorialData>(),
   demo: boolean("demo").notNull().default(false),
-});
+}, (table) => [
+  uniqueIndex("catalog_products_editorial_source_id_unique")
+    .on(sql`(${table.editorial} ->> 'sourceId')`)
+    .where(sql`${table.editorial} ->> 'sourceId' IS NOT NULL`),
+]);
 
 export const insertCatalogProductSchema = createInsertSchema(
   catalogProductsTable,

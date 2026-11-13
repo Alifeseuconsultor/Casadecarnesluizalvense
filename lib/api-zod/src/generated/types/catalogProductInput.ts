@@ -5,6 +5,7 @@
  * API de operação do açougue e catálogo compartilhado
  * OpenAPI spec version: 0.1.0
  */
+import type { CatalogEditorial } from './catalogEditorial';
 import type { CatalogProductInputProductType } from './catalogProductInputProductType';
 import type { CatalogProductInputSaleUnit } from './catalogProductInputSaleUnit';
 import type { CatalogProductInputStatus } from './catalogProductInputStatus';
@@ -39,4 +40,5 @@ export interface CatalogProductInput {
   promoStartsAt?: Date | null;
   /** @nullable */
   promoEndsAt?: Date | null;
+  editorial?: CatalogEditorial;
 }
