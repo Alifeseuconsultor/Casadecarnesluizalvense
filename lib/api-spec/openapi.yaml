@@ -1,22 +1,23 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API de operação do açougue e catálogo compartilhado
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: orders
+  - name: customers
+  - name: catalog
+  - name: dashboard
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +25,330 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: Listar pedidos com itens e preferências
+      responses:
+        "200":
+          description: Pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Criar pedido pelo balcão ou futuro app do cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Consultar pedido completo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Pedido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Pedido não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      summary: Avançar ou atualizar etapa do pedido
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusInput"
+      responses:
+        "200":
+          description: Pedido atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{id}/items/{itemId}/prepared:
+    patch:
+      operationId: updateItemPrepared
+      tags: [orders]
+      summary: Marcar item como preparado ou pendente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+        - in: path
+          name: itemId
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemPreparedInput"
+      responses:
+        "200":
+          description: Pedido atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /orders/{id}/items/{itemId}/weight:
+    patch:
+      operationId: updateItemWeight
+      tags: [orders]
+      summary: Registrar peso final e recalcular valores
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+        - in: path
+          name: itemId
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemWeightInput"
+      responses:
+        "200":
+          description: Pedido com valores recalculados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: Listar clientes
+      responses:
+        "200":
+          description: Clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Cadastrar cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerInput"
+      responses:
+        "201":
+          description: Cliente criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+  /catalog:
+    get:
+      operationId: listCatalog
+      tags: [catalog]
+      summary: Consultar catálogo compartilhado de produtos ativos
+      responses:
+        "200":
+          description: Catálogo compartilhado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CatalogProduct"
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Resumo das etapas e pedidos de hoje
+      responses:
+        "200":
+          description: Resumo operacional
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        status: { type: string }
+      required: [status]
+    ApiError:
+      type: object
+      properties:
+        error: { type: string }
+      required: [error]
+    Customer:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        phone: { type: ["string", "null"] }
+        createdAt: { type: string, format: date-time }
+      required: [id, name, phone, createdAt]
+    CustomerInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        phone: { type: ["string", "null"] }
+      required: [name]
+    CatalogProduct:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        category: { type: string }
+        description: { type: ["string", "null"] }
+        pricePerKg: { type: number }
+        active: { type: boolean }
+        demo: { type: boolean }
+      required: [id, name, category, description, pricePerKg, active, demo]
+    OrderItem:
+      type: object
+      properties:
+        id: { type: integer }
+        productId: { type: ["integer", "null"] }
+        productName: { type: string }
+        quantity: { type: number }
+        unit: { type: string, enum: [kg, g, unidade] }
+        cutPreference: { type: ["string", "null"] }
+        thickness: { type: ["string", "null"] }
+        fatTrim: { type: ["string", "null"] }
+        observations: { type: ["string", "null"] }
+        estimatedWeightKg: { type: ["number", "null"] }
+        actualWeightKg: { type: ["number", "null"] }
+        pricePerKg: { type: number }
+        estimatedSubtotal: { type: number }
+        finalSubtotal: { type: ["number", "null"] }
+        prepared: { type: boolean }
+      required: [id, productId, productName, quantity, unit, cutPreference, thickness, fatTrim, observations, estimatedWeightKg, actualWeightKg, pricePerKg, estimatedSubtotal, finalSubtotal, prepared]
+    Order:
+      type: object
+      properties:
+        id: { type: integer }
+        orderNumber: { type: string }
+        customer: { $ref: "#/components/schemas/Customer" }
+        status: { type: string, enum: [new, preparing, ready, completed] }
+        serviceType: { type: string, enum: [pickup, delivery] }
+        deliveryAddress: { type: ["string", "null"] }
+        paymentMethod: { type: string, enum: [pix, card, cash, on_delivery] }
+        paymentStatus: { type: string, enum: [pending, paid] }
+        scheduledAt: { type: ["string", "null"], format: date-time }
+        notes: { type: ["string", "null"] }
+        estimatedTotal: { type: number }
+        finalTotal: { type: ["number", "null"] }
+        balanceAdjustment: { type: ["number", "null"] }
+        demo: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+      required: [id, orderNumber, customer, status, serviceType, deliveryAddress, paymentMethod, paymentStatus, scheduledAt, notes, estimatedTotal, finalTotal, balanceAdjustment, demo, createdAt, updatedAt, items]
+    OrderItemInput:
+      type: object
+      properties:
+        productId: { type: ["integer", "null"] }
+        productName: { type: string, minLength: 1 }
+        quantity: { type: number, exclusiveMinimum: 0 }
+        unit: { type: string, enum: [kg, g, unidade] }
+        cutPreference: { type: ["string", "null"] }
+        thickness: { type: ["string", "null"] }
+        fatTrim: { type: ["string", "null"] }
+        observations: { type: ["string", "null"] }
+        estimatedWeightKg: { type: ["number", "null"] }
+        actualWeightKg: { type: ["number", "null"] }
+        pricePerKg: { type: number, minimum: 0 }
+      required: [productName, quantity, unit, pricePerKg]
+    OrderInput:
+      type: object
+      properties:
+        customerId: { type: ["integer", "null"] }
+        customer:
+          $ref: "#/components/schemas/CustomerInput"
+        serviceType: { type: string, enum: [pickup, delivery] }
+        deliveryAddress: { type: ["string", "null"] }
+        paymentMethod: { type: string, enum: [pix, card, cash, on_delivery] }
+        paymentStatus: { type: string, enum: [pending, paid] }
+        scheduledAt: { type: ["string", "null"], format: date-time }
+        notes: { type: ["string", "null"] }
+        demo: { type: boolean, default: false }
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/OrderItemInput"
+      required: [customer, serviceType, paymentMethod, items]
+    OrderStatusInput:
+      type: object
+      properties:
+        status: { type: string, enum: [new, preparing, ready, completed] }
+      required: [status]
+    ItemPreparedInput:
+      type: object
+      properties:
+        prepared: { type: boolean }
+      required: [prepared]
+    ItemWeightInput:
+      type: object
+      properties:
+        actualWeightKg: { type: number, exclusiveMinimum: 0 }
+      required: [actualWeightKg]
+    DashboardSummary:
+      type: object
+      properties:
+        new: { type: integer }
+        preparing: { type: integer }
+        ready: { type: integer }
+        completedToday: { type: integer }
+        ordersToday: { type: integer }
+        estimatedSalesToday: { type: number }
+      required: [new, preparing, ready, completedToday, ordersToday, estimatedSalesToday]

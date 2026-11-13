@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Açougue Operação"
+description = "Painel de pedidos e preparo do açougue para balcão e equipe da cozinha, com acompanhamento do fluxo, preferências de corte e ajuste de peso final."
+version = "1.0.0"
+id = "artifacts/acougue-ops"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22512
+
+[services.development]
+run = "pnpm --filter @workspace/acougue-ops run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/acougue-ops", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/acougue-ops/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22512"
+BASE_PATH = "/"
