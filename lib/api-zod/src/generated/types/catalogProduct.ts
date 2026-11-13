@@ -5,6 +5,9 @@
  * API de operação do açougue e catálogo compartilhado
  * OpenAPI spec version: 0.1.0
  */
+import type { CatalogProductProductType } from './catalogProductProductType';
+import type { CatalogProductSaleUnit } from './catalogProductSaleUnit';
+import type { CatalogProductStatus } from './catalogProductStatus';
 
 export interface CatalogProduct {
   id: number;
@@ -13,6 +16,21 @@ export interface CatalogProduct {
   /** @nullable */
   description: string | null;
   pricePerKg: number;
+  saleUnit: CatalogProductSaleUnit;
   active: boolean;
+  status: CatalogProductStatus;
+  productType: CatalogProductProductType;
+  /** @nullable */
+  stockQuantity: number | null;
+  /** @nullable */
+  imageUrl: string | null;
+  /** @nullable */
+  promoPrice: number | null;
+  /** @nullable */
+  promoLabel: string | null;
+  /** @nullable */
+  promoStartsAt: Date | null;
+  /** @nullable */
+  promoEndsAt: Date | null;
   demo: boolean;
 }

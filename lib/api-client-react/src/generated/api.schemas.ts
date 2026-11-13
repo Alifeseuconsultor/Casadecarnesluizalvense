@@ -18,6 +18,9 @@ export interface Customer {
   name: string;
   /** @nullable */
   phone: string | null;
+  preferences: string[];
+  /** @nullable */
+  internalNotes: string | null;
   createdAt: string;
 }
 
@@ -28,6 +31,42 @@ export interface CustomerInput {
   phone?: string | null;
 }
 
+export interface CustomerUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /** @nullable */
+  phone?: string | null;
+  preferences?: string[];
+  /** @nullable */
+  internalNotes?: string | null;
+}
+
+export type CatalogProductSaleUnit = typeof CatalogProductSaleUnit[keyof typeof CatalogProductSaleUnit];
+
+
+export const CatalogProductSaleUnit = {
+  kg: 'kg',
+  g: 'g',
+  unidade: 'unidade',
+} as const;
+
+export type CatalogProductStatus = typeof CatalogProductStatus[keyof typeof CatalogProductStatus];
+
+
+export const CatalogProductStatus = {
+  active: 'active',
+  inactive: 'inactive',
+  sold_out: 'sold_out',
+} as const;
+
+export type CatalogProductProductType = typeof CatalogProductProductType[keyof typeof CatalogProductProductType];
+
+
+export const CatalogProductProductType = {
+  product: 'product',
+  combo: 'combo',
+} as const;
+
 export interface CatalogProduct {
   id: number;
   name: string;
@@ -35,8 +74,235 @@ export interface CatalogProduct {
   /** @nullable */
   description: string | null;
   pricePerKg: number;
+  saleUnit: CatalogProductSaleUnit;
   active: boolean;
+  status: CatalogProductStatus;
+  productType: CatalogProductProductType;
+  /** @nullable */
+  stockQuantity: number | null;
+  /** @nullable */
+  imageUrl: string | null;
+  /** @nullable */
+  promoPrice: number | null;
+  /** @nullable */
+  promoLabel: string | null;
+  /** @nullable */
+  promoStartsAt: string | null;
+  /** @nullable */
+  promoEndsAt: string | null;
   demo: boolean;
+}
+
+export type CatalogProductInputSaleUnit = typeof CatalogProductInputSaleUnit[keyof typeof CatalogProductInputSaleUnit];
+
+
+export const CatalogProductInputSaleUnit = {
+  kg: 'kg',
+  g: 'g',
+  unidade: 'unidade',
+} as const;
+
+export type CatalogProductInputStatus = typeof CatalogProductInputStatus[keyof typeof CatalogProductInputStatus];
+
+
+export const CatalogProductInputStatus = {
+  active: 'active',
+  inactive: 'inactive',
+  sold_out: 'sold_out',
+} as const;
+
+export type CatalogProductInputProductType = typeof CatalogProductInputProductType[keyof typeof CatalogProductInputProductType];
+
+
+export const CatalogProductInputProductType = {
+  product: 'product',
+  combo: 'combo',
+} as const;
+
+export interface CatalogProductInput {
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  category: string;
+  /** @nullable */
+  description?: string | null;
+  /** @minimum 0 */
+  pricePerKg: number;
+  saleUnit: CatalogProductInputSaleUnit;
+  status: CatalogProductInputStatus;
+  productType: CatalogProductInputProductType;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  stockQuantity?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  promoPrice?: number | null;
+  /** @nullable */
+  promoLabel?: string | null;
+  /** @nullable */
+  promoStartsAt?: string | null;
+  /** @nullable */
+  promoEndsAt?: string | null;
+}
+
+export type CatalogProductUpdateSaleUnit = typeof CatalogProductUpdateSaleUnit[keyof typeof CatalogProductUpdateSaleUnit];
+
+
+export const CatalogProductUpdateSaleUnit = {
+  kg: 'kg',
+  g: 'g',
+  unidade: 'unidade',
+} as const;
+
+export type CatalogProductUpdateStatus = typeof CatalogProductUpdateStatus[keyof typeof CatalogProductUpdateStatus];
+
+
+export const CatalogProductUpdateStatus = {
+  active: 'active',
+  inactive: 'inactive',
+  sold_out: 'sold_out',
+} as const;
+
+export type CatalogProductUpdateProductType = typeof CatalogProductUpdateProductType[keyof typeof CatalogProductUpdateProductType];
+
+
+export const CatalogProductUpdateProductType = {
+  product: 'product',
+  combo: 'combo',
+} as const;
+
+export interface CatalogProductUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /** @minLength 1 */
+  category?: string;
+  /** @nullable */
+  description?: string | null;
+  /** @minimum 0 */
+  pricePerKg?: number;
+  saleUnit?: CatalogProductUpdateSaleUnit;
+  status?: CatalogProductUpdateStatus;
+  productType?: CatalogProductUpdateProductType;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  stockQuantity?: number | null;
+  /** @nullable */
+  imageUrl?: string | null;
+  /**
+     * @minimum 0
+     * @nullable
+     */
+  promoPrice?: number | null;
+  /** @nullable */
+  promoLabel?: string | null;
+  /** @nullable */
+  promoStartsAt?: string | null;
+  /** @nullable */
+  promoEndsAt?: string | null;
+}
+
+export interface StoreHours {[key: string]: {
+  open: string;
+  close: string;
+  closed: boolean;
+}}
+
+export interface PickupSlot {
+  time: string;
+  /** @minimum 1 */
+  limit: number;
+}
+
+export type StoreSettingsServiceTypesItem = typeof StoreSettingsServiceTypesItem[keyof typeof StoreSettingsServiceTypesItem];
+
+
+export const StoreSettingsServiceTypesItem = {
+  pickup: 'pickup',
+  delivery: 'delivery',
+} as const;
+
+export type StoreSettingsPaymentMethodsItem = typeof StoreSettingsPaymentMethodsItem[keyof typeof StoreSettingsPaymentMethodsItem];
+
+
+export const StoreSettingsPaymentMethodsItem = {
+  pix: 'pix',
+  card: 'card',
+  cash: 'cash',
+  on_delivery: 'on_delivery',
+} as const;
+
+export interface StoreSettings {
+  id: number;
+  weeklyHours: StoreHours;
+  pickupSlots: PickupSlot[];
+  serviceTypes: StoreSettingsServiceTypesItem[];
+  /** @minimum 0 */
+  preparationMinutes: number;
+  paymentMethods: StoreSettingsPaymentMethodsItem[];
+  /** @nullable */
+  whatsapp: string | null;
+}
+
+export type StoreSettingsInputServiceTypesItem = typeof StoreSettingsInputServiceTypesItem[keyof typeof StoreSettingsInputServiceTypesItem];
+
+
+export const StoreSettingsInputServiceTypesItem = {
+  pickup: 'pickup',
+  delivery: 'delivery',
+} as const;
+
+export type StoreSettingsInputPaymentMethodsItem = typeof StoreSettingsInputPaymentMethodsItem[keyof typeof StoreSettingsInputPaymentMethodsItem];
+
+
+export const StoreSettingsInputPaymentMethodsItem = {
+  pix: 'pix',
+  card: 'card',
+  cash: 'cash',
+  on_delivery: 'on_delivery',
+} as const;
+
+export interface StoreSettingsInput {
+  weeklyHours: StoreHours;
+  pickupSlots: PickupSlot[];
+  /** @minItems 1 */
+  serviceTypes: StoreSettingsInputServiceTypesItem[];
+  /** @minimum 0 */
+  preparationMinutes: number;
+  /** @minItems 1 */
+  paymentMethods: StoreSettingsInputPaymentMethodsItem[];
+  /** @nullable */
+  whatsapp: string | null;
+}
+
+export interface TopProduct {
+  productName: string;
+  quantity: number;
+  revenue: number;
+}
+
+export interface DailyRevenue {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface SalesReport {
+  from: string;
+  to: string;
+  revenue: number;
+  orderCount: number;
+  averageTicket: number;
+  pendingOrders: number;
+  topProducts: TopProduct[];
+  dailyRevenue: DailyRevenue[];
 }
 
 export type OrderItemUnit = typeof OrderItemUnit[keyof typeof OrderItemUnit];
@@ -243,4 +509,9 @@ export interface DashboardSummary {
   ordersToday: number;
   estimatedSalesToday: number;
 }
+
+export type GetSalesReportParams = {
+from: string;
+to: string;
+};
 

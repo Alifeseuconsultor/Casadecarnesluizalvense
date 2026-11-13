@@ -76,12 +76,23 @@ router.post("/orders", async (req, res): Promise<void> => {
                 and(
                   eq(catalogProductsTable.id, item.productId),
                   eq(catalogProductsTable.active, true),
+                  eq(catalogProductsTable.status, "active"),
                 ),
               )
               .limit(1);
       if (item.productId != null && !catalogProduct) return undefined;
       const productName = catalogProduct?.name ?? item.productName;
-      const pricePerKg = catalogProduct?.pricePerKg ?? item.pricePerKg;
+      const promotionIsValid =
+        catalogProduct?.promoPrice != null &&
+        (catalogProduct.promoStartsAt == null ||
+          catalogProduct.promoStartsAt <= new Date()) &&
+        (catalogProduct.promoEndsAt == null ||
+          catalogProduct.promoEndsAt >= new Date());
+      const pricePerKg = catalogProduct
+        ? promotionIsValid
+          ? catalogProduct.promoPrice!
+          : catalogProduct.pricePerKg
+        : item.pricePerKg;
       const weight = estimateItemWeight(item);
       const estimatedSubtotal = roundCurrency(
         (weight ?? item.quantity) * pricePerKg,
@@ -346,7 +357,12 @@ router.get("/catalog", async (_req, res): Promise<void> => {
   const products = await db
     .select()
     .from(catalogProductsTable)
-    .where(eq(catalogProductsTable.active, true));
+    .where(
+      and(
+        eq(catalogProductsTable.active, true),
+        eq(catalogProductsTable.status, "active"),
+      ),
+    );
   res.json(ListCatalogResponse.parse(products));
 });
 

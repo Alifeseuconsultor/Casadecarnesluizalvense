@@ -187,6 +187,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Customer"
+  /customers/{id}:
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Atualizar preferências e observações do cliente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerUpdate"
+      responses:
+        "200":
+          description: Cliente atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /catalog:
     get:
       operationId: listCatalog
@@ -201,6 +230,117 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/CatalogProduct"
+  /catalog/admin:
+    get:
+      operationId: listAdminCatalog
+      tags: [catalog]
+      summary: Listar catálogo completo para administração
+      responses:
+        "200":
+          description: Catálogo completo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CatalogProduct"
+  /catalog/products:
+    post:
+      operationId: createCatalogProduct
+      tags: [catalog]
+      summary: Cadastrar produto, combo ou promoção
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogProductInput"
+      responses:
+        "201":
+          description: Produto criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogProduct"
+  /catalog/products/{id}:
+    patch:
+      operationId: updateCatalogProduct
+      tags: [catalog]
+      summary: Atualizar produto do catálogo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogProductUpdate"
+      responses:
+        "200":
+          description: Produto atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogProduct"
+        "404":
+          description: Produto não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /store-settings:
+    get:
+      operationId: getStoreSettings
+      tags: [settings]
+      summary: Consultar configurações da loja
+      responses:
+        "200":
+          description: Configurações
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreSettings"
+    put:
+      operationId: updateStoreSettings
+      tags: [settings]
+      summary: Salvar configurações da loja
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreSettingsInput"
+      responses:
+        "200":
+          description: Configurações salvas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreSettings"
+  /reports:
+    get:
+      operationId: getSalesReport
+      tags: [reports]
+      summary: Calcular indicadores de vendas a partir dos pedidos
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema: { type: string }
+        - in: query
+          name: to
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Indicadores do período
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesReport"
   /dashboard/summary:
     get:
       operationId: getDashboardSummary
@@ -231,14 +371,27 @@ components:
         id: { type: integer }
         name: { type: string }
         phone: { type: ["string", "null"] }
+        preferences:
+          type: array
+          items: { type: string }
+        internalNotes: { type: ["string", "null"] }
         createdAt: { type: string, format: date-time }
-      required: [id, name, phone, createdAt]
+      required: [id, name, phone, preferences, internalNotes, createdAt]
     CustomerInput:
       type: object
       properties:
         name: { type: string, minLength: 1 }
         phone: { type: ["string", "null"] }
       required: [name]
+    CustomerUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        phone: { type: ["string", "null"] }
+        preferences:
+          type: array
+          items: { type: string }
+        internalNotes: { type: ["string", "null"] }
     CatalogProduct:
       type: object
       properties:
@@ -247,9 +400,131 @@ components:
         category: { type: string }
         description: { type: ["string", "null"] }
         pricePerKg: { type: number }
+        saleUnit: { type: string, enum: [kg, g, unidade] }
         active: { type: boolean }
+        status: { type: string, enum: [active, inactive, sold_out] }
+        productType: { type: string, enum: [product, combo] }
+        stockQuantity: { type: ["number", "null"] }
+        imageUrl: { type: ["string", "null"] }
+        promoPrice: { type: ["number", "null"] }
+        promoLabel: { type: ["string", "null"] }
+        promoStartsAt: { type: ["string", "null"], format: date-time }
+        promoEndsAt: { type: ["string", "null"], format: date-time }
         demo: { type: boolean }
-      required: [id, name, category, description, pricePerKg, active, demo]
+      required: [id, name, category, description, pricePerKg, saleUnit, active, status, productType, stockQuantity, imageUrl, promoPrice, promoLabel, promoStartsAt, promoEndsAt, demo]
+    CatalogProductInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        description: { type: ["string", "null"] }
+        pricePerKg: { type: number, minimum: 0 }
+        saleUnit: { type: string, enum: [kg, g, unidade] }
+        status: { type: string, enum: [active, inactive, sold_out] }
+        productType: { type: string, enum: [product, combo] }
+        stockQuantity: { type: ["number", "null"], minimum: 0 }
+        imageUrl: { type: ["string", "null"] }
+        promoPrice: { type: ["number", "null"], minimum: 0 }
+        promoLabel: { type: ["string", "null"] }
+        promoStartsAt: { type: ["string", "null"], format: date-time }
+        promoEndsAt: { type: ["string", "null"], format: date-time }
+      required: [name, category, pricePerKg, saleUnit, status, productType]
+    CatalogProductUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        description: { type: ["string", "null"] }
+        pricePerKg: { type: number, minimum: 0 }
+        saleUnit: { type: string, enum: [kg, g, unidade] }
+        status: { type: string, enum: [active, inactive, sold_out] }
+        productType: { type: string, enum: [product, combo] }
+        stockQuantity: { type: ["number", "null"], minimum: 0 }
+        imageUrl: { type: ["string", "null"] }
+        promoPrice: { type: ["number", "null"], minimum: 0 }
+        promoLabel: { type: ["string", "null"] }
+        promoStartsAt: { type: ["string", "null"], format: date-time }
+        promoEndsAt: { type: ["string", "null"], format: date-time }
+    StoreHours:
+      type: object
+      additionalProperties:
+        type: object
+        properties:
+          open: { type: string }
+          close: { type: string }
+          closed: { type: boolean }
+        required: [open, close, closed]
+    PickupSlot:
+      type: object
+      properties:
+        time: { type: string }
+        limit: { type: integer, minimum: 1 }
+      required: [time, limit]
+    StoreSettings:
+      type: object
+      properties:
+        id: { type: integer }
+        weeklyHours: { $ref: "#/components/schemas/StoreHours" }
+        pickupSlots:
+          type: array
+          items: { $ref: "#/components/schemas/PickupSlot" }
+        serviceTypes:
+          type: array
+          items: { type: string, enum: [pickup, delivery] }
+        preparationMinutes: { type: integer, minimum: 0 }
+        paymentMethods:
+          type: array
+          items: { type: string, enum: [pix, card, cash, on_delivery] }
+        whatsapp: { type: ["string", "null"] }
+      required: [id, weeklyHours, pickupSlots, serviceTypes, preparationMinutes, paymentMethods, whatsapp]
+    StoreSettingsInput:
+      type: object
+      properties:
+        weeklyHours: { $ref: "#/components/schemas/StoreHours" }
+        pickupSlots:
+          type: array
+          items: { $ref: "#/components/schemas/PickupSlot" }
+        serviceTypes:
+          type: array
+          minItems: 1
+          items: { type: string, enum: [pickup, delivery] }
+        preparationMinutes: { type: integer, minimum: 0 }
+        paymentMethods:
+          type: array
+          minItems: 1
+          items: { type: string, enum: [pix, card, cash, on_delivery] }
+        whatsapp: { type: ["string", "null"] }
+      required: [weeklyHours, pickupSlots, serviceTypes, preparationMinutes, paymentMethods, whatsapp]
+    TopProduct:
+      type: object
+      properties:
+        productName: { type: string }
+        quantity: { type: number }
+        revenue: { type: number }
+      required: [productName, quantity, revenue]
+    DailyRevenue:
+      type: object
+      properties:
+        date: { type: string }
+        revenue: { type: number }
+        orders: { type: integer }
+      required: [date, revenue, orders]
+    SalesReport:
+      type: object
+      properties:
+        from: { type: string }
+        to: { type: string }
+        revenue: { type: number }
+        orderCount: { type: integer }
+        averageTicket: { type: number }
+        pendingOrders: { type: integer }
+        topProducts:
+          type: array
+          items: { $ref: "#/components/schemas/TopProduct" }
+        dailyRevenue:
+          type: array
+          items: { $ref: "#/components/schemas/DailyRevenue" }
+      required: [from, to, revenue, orderCount, averageTicket, pendingOrders, topProducts, dailyRevenue]
     OrderItem:
       type: object
       properties:

@@ -26,6 +26,8 @@ export const ListOrdersResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -109,6 +111,8 @@ export const CreateOrderResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -158,6 +162,8 @@ export const GetOrderResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -211,6 +217,8 @@ export const UpdateOrderStatusResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -265,6 +273,8 @@ export const UpdateItemPreparedResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -323,6 +333,8 @@ export const UpdateItemWeightResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 }),
   "status": zod.enum(['new', 'preparing', 'ready', 'completed']),
@@ -365,6 +377,8 @@ export const ListCustomersResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 })
 export const ListCustomersResponse = zod.array(ListCustomersResponseItem)
@@ -385,6 +399,35 @@ export const CreateCustomerResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Atualizar preferências e observações do cliente
+ */
+export const UpdateCustomerParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+
+
+
+export const UpdateCustomerBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "phone": zod.string().nullish(),
+  "preferences": zod.array(zod.string()).optional(),
+  "internalNotes": zod.string().nullish()
+})
+
+export const UpdateCustomerResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "phone": zod.string().nullable(),
+  "preferences": zod.array(zod.string()),
+  "internalNotes": zod.string().nullable(),
   "createdAt": zod.coerce.date()
 })
 
@@ -398,10 +441,248 @@ export const ListCatalogResponseItem = zod.object({
   "category": zod.string(),
   "description": zod.string().nullable(),
   "pricePerKg": zod.number(),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']),
   "active": zod.boolean(),
+  "status": zod.enum(['active', 'inactive', 'sold_out']),
+  "productType": zod.enum(['product', 'combo']),
+  "stockQuantity": zod.number().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "promoPrice": zod.number().nullable(),
+  "promoLabel": zod.string().nullable(),
+  "promoStartsAt": zod.coerce.date().nullable(),
+  "promoEndsAt": zod.coerce.date().nullable(),
   "demo": zod.boolean()
 })
 export const ListCatalogResponse = zod.array(ListCatalogResponseItem)
+
+
+/**
+ * @summary Listar catálogo completo para administração
+ */
+export const ListAdminCatalogResponseItem = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "description": zod.string().nullable(),
+  "pricePerKg": zod.number(),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']),
+  "active": zod.boolean(),
+  "status": zod.enum(['active', 'inactive', 'sold_out']),
+  "productType": zod.enum(['product', 'combo']),
+  "stockQuantity": zod.number().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "promoPrice": zod.number().nullable(),
+  "promoLabel": zod.string().nullable(),
+  "promoStartsAt": zod.coerce.date().nullable(),
+  "promoEndsAt": zod.coerce.date().nullable(),
+  "demo": zod.boolean()
+})
+export const ListAdminCatalogResponse = zod.array(ListAdminCatalogResponseItem)
+
+
+/**
+ * @summary Cadastrar produto, combo ou promoção
+ */
+
+
+export const createCatalogProductBodyPricePerKgMin = 0;
+
+export const createCatalogProductBodyStockQuantityMin = 0;
+
+export const createCatalogProductBodyPromoPriceMin = 0;
+
+
+
+export const CreateCatalogProductBody = zod.object({
+  "name": zod.string().min(1),
+  "category": zod.string().min(1),
+  "description": zod.string().nullish(),
+  "pricePerKg": zod.number().min(createCatalogProductBodyPricePerKgMin),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']),
+  "status": zod.enum(['active', 'inactive', 'sold_out']),
+  "productType": zod.enum(['product', 'combo']),
+  "stockQuantity": zod.number().min(createCatalogProductBodyStockQuantityMin).nullish(),
+  "imageUrl": zod.string().nullish(),
+  "promoPrice": zod.number().min(createCatalogProductBodyPromoPriceMin).nullish(),
+  "promoLabel": zod.string().nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish()
+})
+
+export const CreateCatalogProductResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "description": zod.string().nullable(),
+  "pricePerKg": zod.number(),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']),
+  "active": zod.boolean(),
+  "status": zod.enum(['active', 'inactive', 'sold_out']),
+  "productType": zod.enum(['product', 'combo']),
+  "stockQuantity": zod.number().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "promoPrice": zod.number().nullable(),
+  "promoLabel": zod.string().nullable(),
+  "promoStartsAt": zod.coerce.date().nullable(),
+  "promoEndsAt": zod.coerce.date().nullable(),
+  "demo": zod.boolean()
+})
+
+
+/**
+ * @summary Atualizar produto do catálogo
+ */
+export const UpdateCatalogProductParams = zod.object({
+  "id": zod.coerce.number().int()
+})
+
+
+
+export const updateCatalogProductBodyPricePerKgMin = 0;
+
+export const updateCatalogProductBodyStockQuantityMin = 0;
+
+export const updateCatalogProductBodyPromoPriceMin = 0;
+
+
+
+export const UpdateCatalogProductBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "category": zod.string().min(1).optional(),
+  "description": zod.string().nullish(),
+  "pricePerKg": zod.number().min(updateCatalogProductBodyPricePerKgMin).optional(),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']).optional(),
+  "status": zod.enum(['active', 'inactive', 'sold_out']).optional(),
+  "productType": zod.enum(['product', 'combo']).optional(),
+  "stockQuantity": zod.number().min(updateCatalogProductBodyStockQuantityMin).nullish(),
+  "imageUrl": zod.string().nullish(),
+  "promoPrice": zod.number().min(updateCatalogProductBodyPromoPriceMin).nullish(),
+  "promoLabel": zod.string().nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish()
+})
+
+export const UpdateCatalogProductResponse = zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "category": zod.string(),
+  "description": zod.string().nullable(),
+  "pricePerKg": zod.number(),
+  "saleUnit": zod.enum(['kg', 'g', 'unidade']),
+  "active": zod.boolean(),
+  "status": zod.enum(['active', 'inactive', 'sold_out']),
+  "productType": zod.enum(['product', 'combo']),
+  "stockQuantity": zod.number().nullable(),
+  "imageUrl": zod.string().nullable(),
+  "promoPrice": zod.number().nullable(),
+  "promoLabel": zod.string().nullable(),
+  "promoStartsAt": zod.coerce.date().nullable(),
+  "promoEndsAt": zod.coerce.date().nullable(),
+  "demo": zod.boolean()
+})
+
+
+/**
+ * @summary Consultar configurações da loja
+ */
+
+export const getStoreSettingsResponsePreparationMinutesMin = 0;
+
+
+
+export const GetStoreSettingsResponse = zod.object({
+  "id": zod.number().int(),
+  "weeklyHours": zod.record(zod.string(), zod.object({
+  "open": zod.string(),
+  "close": zod.string(),
+  "closed": zod.boolean()
+})),
+  "pickupSlots": zod.array(zod.object({
+  "time": zod.string(),
+  "limit": zod.number().int().min(1)
+})),
+  "serviceTypes": zod.array(zod.enum(['pickup', 'delivery'])),
+  "preparationMinutes": zod.number().int().min(getStoreSettingsResponsePreparationMinutesMin),
+  "paymentMethods": zod.array(zod.enum(['pix', 'card', 'cash', 'on_delivery'])),
+  "whatsapp": zod.string().nullable()
+})
+
+
+/**
+ * @summary Salvar configurações da loja
+ */
+
+
+export const updateStoreSettingsBodyPreparationMinutesMin = 0;
+
+
+
+
+export const UpdateStoreSettingsBody = zod.object({
+  "weeklyHours": zod.record(zod.string(), zod.object({
+  "open": zod.string(),
+  "close": zod.string(),
+  "closed": zod.boolean()
+})),
+  "pickupSlots": zod.array(zod.object({
+  "time": zod.string(),
+  "limit": zod.number().int().min(1)
+})),
+  "serviceTypes": zod.array(zod.enum(['pickup', 'delivery'])).min(1),
+  "preparationMinutes": zod.number().int().min(updateStoreSettingsBodyPreparationMinutesMin),
+  "paymentMethods": zod.array(zod.enum(['pix', 'card', 'cash', 'on_delivery'])).min(1),
+  "whatsapp": zod.string().nullable()
+})
+
+
+export const updateStoreSettingsResponsePreparationMinutesMin = 0;
+
+
+
+export const UpdateStoreSettingsResponse = zod.object({
+  "id": zod.number().int(),
+  "weeklyHours": zod.record(zod.string(), zod.object({
+  "open": zod.string(),
+  "close": zod.string(),
+  "closed": zod.boolean()
+})),
+  "pickupSlots": zod.array(zod.object({
+  "time": zod.string(),
+  "limit": zod.number().int().min(1)
+})),
+  "serviceTypes": zod.array(zod.enum(['pickup', 'delivery'])),
+  "preparationMinutes": zod.number().int().min(updateStoreSettingsResponsePreparationMinutesMin),
+  "paymentMethods": zod.array(zod.enum(['pix', 'card', 'cash', 'on_delivery'])),
+  "whatsapp": zod.string().nullable()
+})
+
+
+/**
+ * @summary Calcular indicadores de vendas a partir dos pedidos
+ */
+export const GetSalesReportQueryParams = zod.object({
+  "from": zod.coerce.string(),
+  "to": zod.coerce.string()
+})
+
+export const GetSalesReportResponse = zod.object({
+  "from": zod.string(),
+  "to": zod.string(),
+  "revenue": zod.number(),
+  "orderCount": zod.number().int(),
+  "averageTicket": zod.number(),
+  "pendingOrders": zod.number().int(),
+  "topProducts": zod.array(zod.object({
+  "productName": zod.string(),
+  "quantity": zod.number(),
+  "revenue": zod.number()
+})),
+  "dailyRevenue": zod.array(zod.object({
+  "date": zod.string(),
+  "revenue": zod.number(),
+  "orders": zod.number().int()
+}))
+})
 
 
 /**

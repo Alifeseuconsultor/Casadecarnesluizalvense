@@ -11,5 +11,8 @@ export interface Customer {
   name: string;
   /** @nullable */
   phone: string | null;
+  preferences: string[];
+  /** @nullable */
+  internalNotes: string | null;
   createdAt: Date;
 }

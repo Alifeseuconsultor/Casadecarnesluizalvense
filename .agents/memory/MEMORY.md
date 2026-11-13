@@ -1,0 +1,1 @@
+- [Catalog price basis](catalog-price-basis.md) — preserve legacy order pricing: weight-based items use price per kg, while unit items use price per unit.

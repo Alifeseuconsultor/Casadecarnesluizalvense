@@ -24,9 +24,10 @@ import {
   Plus, Search, ShoppingBag, SlidersHorizontal, Speaker, VolumeX, Truck, UserRound,
   Utensils, X,
 } from 'lucide-react';
-import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import type { Order } from '@workspace/api-client-react';
+import { Route, Switch, useLocation, Router as WouterRouter, Link } from 'wouter';
+import type { CatalogProduct, Order } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
+import { CatalogPage, CustomersPage, ReportsPage, SettingsPage } from '@/pages/admin-pages';
 
 const queryClient = new QueryClient();
 const columns = [
@@ -36,6 +37,14 @@ const columns = [
   { key: 'completed', label: 'Concluídos', note: 'Finalizados hoje', tone: 'muted' },
 ] as const;
 const brl = (value: number | null | undefined) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value ?? 0);
+const currentCatalogPrice = (product: CatalogProduct) => {
+  const now = Date.now();
+  const starts = product.promoStartsAt ? new Date(product.promoStartsAt).getTime() : null;
+  const ends = product.promoEndsAt ? new Date(product.promoEndsAt).getTime() : null;
+  return product.promoPrice != null && (starts == null || starts <= now) && (ends == null || ends >= now)
+    ? product.promoPrice
+    : product.pricePerKg;
+};
 const time = (value: string | null) => value ? new Date(value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Sem horário';
 const stageLabel = (status: string) => columns.find((c) => c.key === status)?.label ?? status;
 
@@ -144,7 +153,7 @@ function Home() {
     if (!Number.isFinite(quantity) || quantity <= 0) return;
     setCart((current) => [...current, {
       productId: selectedProduct.id, productName: selectedProduct.name, quantity,
-      unit: orderForm.unit, pricePerKg: selectedProduct.pricePerKg,
+      unit: orderForm.unit, pricePerKg: currentCatalogPrice(selectedProduct),
       cutPreference: orderForm.cut, thickness: orderForm.thickness, fatTrim: orderForm.fatTrim,
       observations: orderForm.observations,
       estimatedWeightKg: orderForm.unit === 'kg' ? quantity : orderForm.unit === 'g' ? quantity / 1000 : null,
@@ -276,7 +285,7 @@ function Home() {
             <label className="field-label">Horário combinado<input type="datetime-local" value={orderForm.scheduledAt} onChange={(e) => setOrderForm((f) => ({ ...f, scheduledAt: e.target.value }))} data-testid="input-scheduled-at" /></label>
           </div>
           <div className="form-section"><div className="section-heading"><span>02</span><h3>Itens e preferências</h3></div>
-            <div className="field-pair product-row"><label className="field-label">Produto do catálogo<select value={orderForm.selectedProduct} onChange={(e) => setOrderForm((f) => ({ ...f, selectedProduct: e.target.value }))} data-testid="select-catalog-product"><option value="">Escolha um corte</option>{products.map((p) => <option value={p.id} key={p.id}>{p.name} · {brl(p.pricePerKg)}/kg</option>)}</select></label><label className="field-label narrow-field">Quantidade<input type="number" min="0.01" step="0.01" value={orderForm.quantity} onChange={(e) => setOrderForm((f) => ({ ...f, quantity: e.target.value }))} data-testid="input-item-quantity" /></label><label className="field-label unit-field">Unidade<select value={orderForm.unit} onChange={(e) => setOrderForm((f) => ({ ...f, unit: e.target.value }))} data-testid="select-item-unit"><option value="kg">kg</option><option value="g">g</option><option value="unidade">unid.</option></select></label></div>
+            <div className="field-pair product-row"><label className="field-label">Produto do catálogo<select value={orderForm.selectedProduct} onChange={(e) => { const chosen = products.find((p) => p.id === Number(e.target.value)); setOrderForm((f) => ({ ...f, selectedProduct: e.target.value, ...(chosen ? { unit: chosen.saleUnit } : {}) })); }} data-testid="select-catalog-product"><option value="">Escolha um corte</option>{products.map((p) => <option value={p.id} key={p.id}>{p.name} · {brl(currentCatalogPrice(p))}/{p.saleUnit}</option>)}</select></label><label className="field-label narrow-field">Quantidade<input type="number" min="0.01" step="0.01" value={orderForm.quantity} onChange={(e) => setOrderForm((f) => ({ ...f, quantity: e.target.value }))} data-testid="input-item-quantity" /></label><label className="field-label unit-field">Unidade<select value={orderForm.unit} onChange={(e) => setOrderForm((f) => ({ ...f, unit: e.target.value }))} data-testid="select-item-unit"><option value="kg">kg</option><option value="g">g</option><option value="unidade">unid.</option></select></label></div>
             <div className="field-pair"><label className="field-label">Corte / preparo<input value={orderForm.cut} onChange={(e) => setOrderForm((f) => ({ ...f, cut: e.target.value }))} placeholder="Ex.: bifes, cubos" data-testid="input-cut-preference" /></label><label className="field-label">Espessura<input value={orderForm.thickness} onChange={(e) => setOrderForm((f) => ({ ...f, thickness: e.target.value }))} placeholder="Ex.: 2 cm" data-testid="input-thickness" /></label></div>
             <div className="field-pair"><label className="field-label">Gordura<input value={orderForm.fatTrim} onChange={(e) => setOrderForm((f) => ({ ...f, fatTrim: e.target.value }))} placeholder="Ex.: retirar excesso" data-testid="input-fat-trim" /></label><label className="field-label">Observação do item<input value={orderForm.observations} onChange={(e) => setOrderForm((f) => ({ ...f, observations: e.target.value }))} placeholder="Instrução para a equipe" data-testid="input-item-observations" /></label></div>
             <button className="add-item-button" onClick={addProduct} disabled={!selectedProduct} data-testid="button-add-item"><Plus size={16} /> Adicionar item</button>
@@ -292,18 +301,39 @@ function Home() {
 }
 
 function Shell({ children }: { children: ReactNode }) {
+  const [location, setLocation] = useLocation();
+  const goHomeAction = (eventName: string) => {
+    if (location !== '/') {
+      setLocation('/');
+      window.setTimeout(() => window.dispatchEvent(new CustomEvent(eventName)), 80);
+    } else window.dispatchEvent(new CustomEvent(eventName));
+  };
   return <div className="app-shell">
     <aside className="sidebar">
       <div className="brand"><div className="brand-mark"><Utensils size={20} strokeWidth={2.2} /></div><div><strong>Açougue</strong><span>OPERAÇÃO</span></div></div>
       <div className="side-label">ROTINA</div>
       <nav className="side-nav">
-        <button className="side-link active" onClick={() => { window.dispatchEvent(new CustomEvent('show-orders')); }} data-testid="nav-orders"><ClipboardList size={18} /><span>Pedidos</span></button>
-        <button className="side-link" onClick={() => window.dispatchEvent(new CustomEvent('open-create-order'))} data-testid="nav-counter"><ShoppingBag size={18} /><span>Balcão</span></button>
-        <button className="side-link" onClick={() => window.dispatchEvent(new CustomEvent('toggle-prep-view'))} data-testid="nav-prep"><ChefHat size={18} /><span>Preparação</span></button>
+        <Link href="/" className={`side-link ${location === '/' ? 'active' : ''}`} onClick={() => { if (location === '/') window.dispatchEvent(new CustomEvent('show-orders')); }} data-testid="nav-orders"><ClipboardList size={18} /><span>Pedidos</span></Link>
+        <button className="side-link" onClick={() => goHomeAction('open-create-order')} data-testid="nav-counter"><ShoppingBag size={18} /><span>Balcão</span></button>
+        <button className="side-link" onClick={() => goHomeAction('toggle-prep-view')} data-testid="nav-prep"><ChefHat size={18} /><span>Preparação</span></button>
+      </nav>
+      <div className="side-label management-label">GESTÃO</div>
+      <nav className="side-nav">
+        <Link href="/catalog" className={`side-link ${location === '/catalog' ? 'active' : ''}`} data-testid="nav-catalog"><PackageCheck size={18}/><span>Catálogo</span></Link>
+        <Link href="/customers" className={`side-link ${location === '/customers' ? 'active' : ''}`} data-testid="nav-customers"><UserRound size={18}/><span>Clientes</span></Link>
+        <Link href="/reports" className={`side-link ${location === '/reports' ? 'active' : ''}`} data-testid="nav-reports"><Activity size={18}/><span>Relatórios</span></Link>
+        <Link href="/settings" className={`side-link ${location === '/settings' ? 'active' : ''}`} data-testid="nav-settings"><SlidersHorizontal size={18}/><span>Configurações</span></Link>
       </nav>
       <div className="sidebar-bottom"><div className="shift-card"><div className="shift-top"><span className="shift-live" /><span>Turno aberto</span></div><strong>Equipe do balcão</strong><small>Operação em andamento</small></div><div className="help-link"><Headphones size={16} /> Suporte interno</div></div>
       <div className="sidebar-ornament">A CASA<br />DA CARNE</div>
     </aside>
+    <nav className="mobile-nav" aria-label="Navegação principal">
+      <Link href="/" className={location === '/' ? 'selected' : ''} data-testid="mobile-nav-orders"><ClipboardList size={17}/><span>Pedidos</span></Link>
+      <Link href="/catalog" className={location === '/catalog' ? 'selected' : ''} data-testid="mobile-nav-catalog"><PackageCheck size={17}/><span>Catálogo</span></Link>
+      <Link href="/customers" className={location === '/customers' ? 'selected' : ''} data-testid="mobile-nav-customers"><UserRound size={17}/><span>Clientes</span></Link>
+      <Link href="/reports" className={location === '/reports' ? 'selected' : ''} data-testid="mobile-nav-reports"><Activity size={17}/><span>Vendas</span></Link>
+      <Link href="/settings" className={location === '/settings' ? 'selected' : ''} data-testid="mobile-nav-settings"><SlidersHorizontal size={17}/><span>Ajustes</span></Link>
+    </nav>
     {children}
   </div>;
 }
@@ -346,7 +376,7 @@ function OrderDetails({ order, onAdvance, busy, onPrepared, onWeight }: { order:
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/catalog">{() => <Shell><CatalogPage /></Shell>}</Route><Route path="/customers">{() => <Shell><CustomersPage /></Shell>}</Route><Route path="/reports">{() => <Shell><ReportsPage /></Shell>}</Route><Route path="/settings">{() => <Shell><SettingsPage /></Shell>}</Route><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
