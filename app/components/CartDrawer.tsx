@@ -16,8 +16,8 @@ type CartDrawerProps = {
 };
 
 const formatWeight = (grams: number) => {
-  if (grams >= 1000) return \`${(grams / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} kg\`;
-  return \`${grams} g\`;
+  if (grams >= 1000) return `${(grams / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} kg`;
+  return `${grams} g`;
 };
 
 export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove, onAddPairing }: CartDrawerProps) {
@@ -31,13 +31,13 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
     "Olá! Gostaria de solicitar este pedido pela Casa de Carnes Luiz Alvense:",
     "",
     ...lines.map((line) => line.category === "cut"
-      ? \`• \${line.name} — \${line.weightLabel} × \${line.quantity}\`
-      : \`• \${line.name} × \${line.quantity}\`),
+      ? `• ${line.name} — ${line.weightLabel} × ${line.quantity}`
+      : `• ${line.name} × ${line.quantity}`),
     "",
-    \`Peso estimado dos cortes: \${formatWeight(totalGrams)}\`,
+    `Peso estimado dos cortes: ${formatWeight(totalGrams)}`,
     "Gostaria de confirmar disponibilidade, peso final e valores.",
   ].join("\n");
-  const whatsappUrl = \`https://wa.me/\${shop.whatsapp}?text=\${encodeURIComponent(message)}\`;
+  const whatsappUrl = `https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(message)}`;
 
   return (
     <AnimatePresence>
