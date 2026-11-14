@@ -85,7 +85,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
                   <div className="cart-line-list">
                     {lines.map((line) => (
                       <motion.div className="boutique-cart-line" key={line.id} layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 24 }}>
-                        <img src={line.image} alt={line.name}/>
+                        <img src={line.image} alt={line.name} onError={(event) => { event.currentTarget.style.display = "none"; }}/>
                         <div className="boutique-line-copy">
                           <span>{line.category === "cut" ? "CORTE SELECIONADO" : "HARMONIZAÇÃO"}</span>
                           <strong>{line.name}</strong>
@@ -108,7 +108,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
                         const added = extras.some((line) => line.id === item.id);
                         return (
                           <div className="pairing-item" key={item.id}>
-                            <img src={item.image} alt={item.name}/>
+                            <img src={item.image} alt={item.name} onError={(event) => { event.currentTarget.style.display = "none"; }}/>
                             <div><strong>{item.name}</strong><small>{item.description}</small><em>Consulte disponibilidade</em></div>
                             <button type="button" disabled={added} onClick={() => onAddPairing(item)}>{added ? "Adicionado" : <><Plus size={14}/> Incluir</>}</button>
                           </div>
