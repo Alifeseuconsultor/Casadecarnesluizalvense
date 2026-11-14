@@ -30,6 +30,7 @@ function CutCard({ cut, onAdd }: { cut: Cut; onAdd: CutsShowcaseProps["onAdd"] }
             alt={cut.name + (grilled ? " preparado na brasa" : " corte cru")}
             initial={{ opacity: 0, scale: 1.045 }}
             animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.07, transition: { duration: 1.5, ease: [0.22, 1, 0.36, 1] } }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
             onError={(event) => { event.currentTarget.style.display = "none"; }}
