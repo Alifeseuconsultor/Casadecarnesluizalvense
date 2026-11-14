@@ -78,8 +78,10 @@ img { max-width: 100%; }
 .masked-title .title-accent { color: var(--copper-bright); font-style: italic; }
 .hero-copy>p { max-width: 440px; margin: 0; color: rgba(245,242,235,.77); font-size: 13px; line-height: 1.9; }
 .hero-actions { display: flex; align-items: center; gap: 30px; margin-top: 34px; }
-.hero-cta { display: inline-flex; align-items: center; gap: 23px; padding: 15px 21px; border: 1px solid var(--copper); background: var(--copper); color: #17130f; font-size: 10px; font-weight: 700; letter-spacing: .4px; transition: color .3s,background .3s,border .3s; }
-.hero-cta:hover { color: var(--copper-bright); background: transparent; border-color: var(--copper-bright); }
+.hero-cta { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: 23px; padding: 15px 21px; border: 1px solid var(--copper); background: transparent; color: var(--copper-bright); font-size: 10px; font-weight: 700; letter-spacing: .4px; transition: color .35s,border-color .35s; }
+.hero-cta::before { position: absolute; z-index: -1; content: ""; inset: 0; background: var(--copper); transform: scaleX(0); transform-origin: left; transition: transform .65s var(--ease-luxury); }
+.hero-cta:hover { color: #17130f; border-color: var(--copper-bright); }
+.hero-cta:hover::before { transform: scaleX(1); }
 .hero-secondary { display: inline-flex; align-items: center; gap: 10px; color: rgba(245,242,235,.8); font-size: 9px; }
 .hero-secondary svg { color: var(--copper); transition: transform .3s; }
 .hero-secondary:hover svg { transform: translate(4px,4px); }
