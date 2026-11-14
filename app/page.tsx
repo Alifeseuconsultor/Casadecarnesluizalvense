@@ -12,8 +12,6 @@ type Product = {
   badge?: string;
 };
 
-const categories = ["Todos", "Carnes Bovinas", "Carnes Suínas", "Aves", "Linguiças", "Churrasco", "Especiais"];
-
 const products: Product[] = [
   {
     id: 1,
@@ -97,18 +95,17 @@ function SearchIcon() {
 }
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState("Todos");
   const [search, setSearch] = useState("");
   const [cartCount, setCartCount] = useState(0);
 
   const visibleProducts = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
-    return products.filter((product) => {
-      const matchesCategory = activeCategory === "Todos" || product.category === activeCategory;
-      const matchesSearch = !term || product.name.toLocaleLowerCase("pt-BR").includes(term) || product.detail.toLocaleLowerCase("pt-BR").includes(term);
-      return matchesCategory && matchesSearch;
-    });
-  }, [activeCategory, search]);
+    return products.filter((product) =>
+      !term ||
+      product.name.toLocaleLowerCase("pt-BR").includes(term) ||
+      product.detail.toLocaleLowerCase("pt-BR").includes(term)
+    );
+  }, [search]);
 
   return (
     <main className="storefront">
@@ -181,21 +178,8 @@ export default function Home() {
           <a className="see-all" href="#catalogo">Ver todos <span>→</span></a>
         </div>
 
-        <div className="category-pills" aria-label="Filtrar por categoria">
-          {categories.map((category) => (
-            <button
-              className={activeCategory === category ? "category-pill active" : "category-pill"}
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              type="button"
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
         <div className="product-grid" id="catalogo">
-          {visibleProducts.slice(0, 8).map((product) => (
+          {visibleProducts.slice(0, 4).map((product) => (
             <article className="product-card" key={product.id}>
               <div className="product-image">
                 <img src={product.image} alt={product.name}/>
