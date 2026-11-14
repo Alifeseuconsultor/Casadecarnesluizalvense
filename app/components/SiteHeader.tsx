@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Beef, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 
 type SiteHeaderProps = {
   cartCount: number;
