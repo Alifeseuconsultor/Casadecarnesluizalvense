@@ -116,7 +116,7 @@ export type BeefRegion = {
   id: string;
   name: string;
   description: string;
-  marbling: number;
+  relatedCuts: string[];
   preparation: string;
   doneness: string;
 };
@@ -124,35 +124,35 @@ export type BeefRegion = {
 export const beefRegions: BeefRegion[] = [
   {
     id: "shoulder",
-    name: "Acém / Shoulder",
-    description: "Corte dianteiro de sabor pronunciado, ótimo para cocção lenta ou moagem premium.",
-    marbling: 3,
-    preparation: "Defumação lenta ou braseado",
-    doneness: "Bem passado e macio na cocção longa",
+    name: "Dianteiro",
+    description: "Região anterior do bovino, com músculos de diferentes características. Há cortes indicados para cocção lenta, moagem e preparos específicos na grelha.",
+    relatedCuts: ["Acém", "Paleta", "Peito", "Músculo dianteiro"],
+    preparation: "Cocção lenta, braseado ou moagem, conforme o corte",
+    doneness: "Até ficar macio; varia conforme o corte e a técnica",
   },
   {
     id: "ribs",
     name: "Costela",
-    description: "Fibras e gordura entremeadas, com grande potencial de sabor quando o tempo trabalha a seu favor.",
-    marbling: 4,
-    preparation: "Defumação ou fogo baixo",
-    doneness: "Bem macia, soltando do osso",
+    description: "Região torácica com ossos, músculos e gordura. O resultado depende da porção, da espessura e do tempo de cocção.",
+    relatedCuts: ["Costela janela", "Costela minga", "Ponta de agulha"],
+    preparation: "Brasa baixa, defumação ou cocção lenta",
+    doneness: "Cocção prolongada até atingir maciez",
   },
   {
     id: "loin",
-    name: "Filé / Lombo",
-    description: "Região de cortes altos e macios, como chorizo e ancho, com preparo rápido e calor intenso.",
-    marbling: 4,
-    preparation: "Parrilla ou grelha forte",
-    doneness: "Mal passado a ao ponto",
+    name: "Lombo",
+    description: "Faixa dorsal associada a cortes valorizados pela maciez. A identificação precisa de cada peça depende da linha de separação da desossa.",
+    relatedCuts: ["Ancho", "Chorizo", "Contrafilé", "Filé-mignon"],
+    preparation: "Grelha ou parrilla, com calor bem controlado",
+    doneness: "Mal passado a ao ponto, conforme a peça",
   },
   {
     id: "rump",
-    name: "Traseiro / Picanha",
-    description: "Região nobre, de fibras delicadas e capa de gordura que protege a suculência.",
-    marbling: 3,
-    preparation: "Grelha ou espeto na brasa",
-    doneness: "Ao ponto para mal",
+    name: "Traseiro",
+    description: "Grande conjunto anatômico posterior, subdividido em várias peças comerciais com usos e características diferentes.",
+    relatedCuts: ["Alcatra", "Picanha", "Maminha", "Patinho"],
+    preparation: "Grelha, espeto ou cocção específica para cada peça",
+    doneness: "Varia conforme o corte e a espessura",
   },
 ];
 
