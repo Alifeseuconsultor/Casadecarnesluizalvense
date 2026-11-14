@@ -22,7 +22,7 @@ export default function KitsChurrasco({ onAdd }: KitsChurrascoProps) {
         <div className="kits-grid">
           {pairings.map((item, index) => (
             <motion.article className="kit-card" key={item.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .65, delay: index * .08, ease: [0.22, 1, 0.36, 1] }}>
-              <div className="kit-image"><img src={item.image} alt={item.name} loading="lazy"/><span>0{index + 1}</span></div>
+              <div className="kit-image"><img src={item.image} alt={item.name} loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }}/><span>0{index + 1}</span></div>
               <div className="kit-copy"><div><Flame size={13}/> HARMONIZAÇÃO</div><h3>{item.name}</h3><p>{item.description}</p><button type="button" onClick={() => onAdd(item)}>Adicionar ao pedido <Plus size={14}/></button></div>
             </motion.article>
           ))}
