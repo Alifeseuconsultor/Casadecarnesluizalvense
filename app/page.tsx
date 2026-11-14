@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Clock3, Instagram, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Clock3, MapPin, Phone } from "lucide-react";
 import SiteHeader from "./components/SiteHeader";
 import Hero from "./components/Hero";
 import CutsShowcase from "./components/CutsShowcase";
@@ -100,7 +100,7 @@ export default function Home() {
         <footer className="lux-footer">
           <a href="#inicio" className="footer-signature"><span>LA</span><div><small>CASA DE CARNES</small><strong>LUIZ ALVENSE</strong><em>QUALIDADE EM CADA DETALHE</em></div></a>
           <div className="footer-phrase">ORIGEM. SELEÇÃO. EXPERIÊNCIA.</div>
-          <div className="footer-social"><a href="tel:+554733044430" aria-label="Telefone"><Phone size={16}/></a><a href="#contato" aria-label="Instagram"><Instagram size={16}/></a><span>© 2026 LUIZ ALVENSE</span></div>
+          <div className="footer-social"><a href="tel:+554733044430" aria-label="Telefone"><Phone size={16}/></a><a href={mapsUrl} target="_blank" rel="noreferrer" aria-label="Localização"><MapPin size={16}/></a><span>© 2026 LUIZ ALVENSE</span></div>
         </footer>
       </main>
 
