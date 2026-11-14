@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Flame, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { pairings, shop, type CartLine } from "./data";
@@ -39,10 +40,22 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
   ].join("\n");
   const whatsappUrl = `https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(message)}`;
 
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, onClose]);
+
   return (
     <AnimatePresence>
       {open && (
-        <div className="cart-overlay-root">
+        <motion.div className="cart-overlay-root" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .24 }}>
           <motion.button className="cart-scrim" type="button" aria-label="Fechar carrinho" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .28 }}/>
           <motion.aside
             className="boutique-cart"
@@ -120,7 +133,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
               </>
             )}
           </motion.aside>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
