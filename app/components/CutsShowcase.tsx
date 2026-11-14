@@ -32,6 +32,7 @@ function CutCard({ cut, onAdd }: { cut: Cut; onAdd: CutsShowcaseProps["onAdd"] }
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
+            onError={(event) => { event.currentTarget.style.display = "none"; }}
           />
         </AnimatePresence>
         <div className="cut-image-vignette"/>
