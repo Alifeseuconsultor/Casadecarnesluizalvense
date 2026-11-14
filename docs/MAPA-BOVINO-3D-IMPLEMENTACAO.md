@@ -1,61 +1,64 @@
-# Mapa bovino 3D — especificação de implementação
+# Mapa bovino 3D — implementação e limites
 
-## Contexto do repositório
-Projeto Next.js 15 / React 19. A página inicial já inclui `InteractiveBeefMap.tsx`, atualmente uma ilustração SVG 2D com quatro regiões genéricas. O objetivo é substituir essa experiência por um visualizador 3D real sem alterar a vitrine, o carrinho ou as demais seções.
+## Estado entregue nesta branch
 
-## Objetivo
-Criar um módulo de anatomia bovina 3D interativo, com rotação livre, zoom, seleção de peças e painel informativo. O modelo deve ser uma malha 3D real em GLB/GLTF, não SVG, imagem com parallax ou formas geométricas improvisadas.
+O mapa SVG anterior foi substituído por um visualizador 3D interativo integrado à seção `#mapa-do-boi`.
 
-## Regras anatômicas inegociáveis
-- Usar nomenclatura comercial brasileira e documentar sinônimos regionais.
-- Validar limites e localização de cada corte com referências técnicas de desossa e anatomia muscular bovina.
-- Não atribuir ao modelo uma precisão anatômica que a malha não possua.
-- Distinguir cortes primários, subdivisões comerciais e músculos; documentar relações de inclusão/sobreposição.
-- Não apresentar uma região genérica como se fosse um corte individual.
-- Antes de habilitar um corte no seletor, registrar sua fonte e validação.
+Arquivos:
+- `app/components/InteractiveBeefMap.tsx`: interface, seleção das regiões, painel explicativo e controles.
+- `app/components/BeefMap3DCanvas.tsx`: cena Three.js via React Three Fiber, carregamento do GLB, controles de órbita, hotspots e fallback.
+- `app/components/data.ts`: conteúdo descritivo das quatro regiões e exemplos de cortes associados.
+- `app/globals.css`: layout responsivo e estilo da experiência 3D.
+- `package.json`: dependências Three.js, React Three Fiber e Drei.
 
-## Escopo visual
-1. Modo externo: bovino inteiro com pele/pelagem realistas, vista lateral e rotação livre.
-2. Modo anatômico: musculatura e peças comerciais individualizadas, cada uma como mesh/nó identificável.
-3. Alternância explícita entre os modos; não mostrar cortes internos como se fossem visíveis através da pele.
-4. Controles: orbit 360°, inclinação, zoom, reset, vistas laterais, frontal, traseira e superior.
-5. Hover/foco: destaque dourado e nome da peça.
-6. Clique: selecionar/realçar a peça e atualizar painel com nome, região anatômica, descrição, características, preparo e foto do produto quando houver imagem cadastrada.
-7. Mobile: gestos de toque e controles acessíveis por teclado.
+## Experiência implementada
 
-## Integração
-- Implementar com `three`, `@react-three/fiber` e `@react-three/drei`, compatíveis com React 19.
-- Carregar o GLB sob demanda; usar Suspense e estado de carregamento/erro.
-- Manter o módulo isolado e preservar a API de integração da página.
-- O CTA de produto só deve aparecer quando houver correspondência real com item do catálogo; não inventar preço, estoque ou disponibilidade.
-- Otimizar geometria, texturas e tamanho do arquivo; avaliar Draco/Meshopt se necessário.
+- Modelo 3D de touro em cena, com iluminação e sombra.
+- Rotação 360° com mouse ou toque, zoom e controle de giro automático.
+- Reinicialização da câmera.
+- Alternância entre visão externa sem marcadores e visão por regiões comerciais.
+- Hotspots clicáveis no perfil externo, sincronizados com o painel.
+- Navegação alternativa por botões acessíveis, inclusive em telas pequenas.
+- Fallback para um segundo GLB mais leve quando o modelo principal não carregar.
+- Painel com região, exemplos de cortes associados, preparo e observação de que a lista é orientativa.
 
-## Entrega incremental
-### Fase 1 — visualizador
-- Integrar dependências e criar componente 3D isolado.
-- Carregar um modelo bovino GLB licenciado e de qualidade adequada.
-- Implementar rotação, zoom, reset, presets de câmera, acessibilidade e responsividade.
-- Se o modelo não estiver disponível, mostrar placeholder honesto e manter a experiência marcada como protótipo; não simular um modelo real com SVG.
+## Modelo externo e licenças
 
-### Fase 2 — anatomia
-- Obter/criar modelo anatômico com peças separadas.
-- Validar peça por peça com especialista/referência técnica.
-- Criar manifesto de IDs, nomes brasileiros, região, fonte e status de validação.
-- Só liberar seleção individual após validação.
+Modelo principal: **Black Bull — Grab3D**, GLB otimizado (versão Light).
+- URL usada: `https://grab3d.com/dl/bull/bull-light.glb`
+- Página e ficha técnica: https://grab3d.com/models/animals/bull/
+- Licença declarada pelo fornecedor: CC0 1.0; a página indica uso comercial e redistribuição sem atribuição obrigatória.
+- A ficha informa aproximadamente 227 mil triângulos para a versão Light.
 
-### Fase 3 — catálogo
-- Mapear IDs anatômicos para IDs reais de produtos.
-- Integrar imagens e CTA com catálogo existente.
+Fallback: **bull — 3DAssets.dev**.
+- URL usada: `https://cdn.3dassets.dev/assets/5010/v1/model.glb`
+- Página: https://3dassets.dev/assets/farm-livestock-and-barnyard-bull-f7c674f7
+- Licença declarada: CC0 1.0 Universal.
+- Modelo low-poly leve, com eixos Y-up e Z-forward documentados pelo fornecedor.
 
-## Critérios de aceite
-- O boi gira de forma contínua em 360° e responde a mouse/toque.
-- Zoom e reset funcionam sem quebrar layout.
-- Os modos externo e anatômico são distintos e explícitos.
-- Cada peça selecionável corresponde a uma malha própria e a um registro validado.
-- Painel e destaque permanecem sincronizados.
-- Build e lint passam.
-- A loja, navegação, catálogo e carrinho existentes continuam funcionando.
-- Nenhuma alteração é feita diretamente em `main`; entregar por pull request para revisão.
+Os arquivos são carregados diretamente dos respectivos CDNs; não foram copiados para o repositório. Isso reduz o tamanho do bundle, mas cria dependência de disponibilidade e CORS dos fornecedores. Para produção de longo prazo, a recomendação é armazenar uma cópia licenciada e otimizada em hospedagem controlada pelo projeto.
 
-## Referências técnicas a consultar
-Priorizar publicações técnicas brasileiras sobre padronização de cortes, materiais de instituições de pesquisa agropecuária e manuais de desossa industrial. Registrar título, instituição, URL e quais limites anatômicos cada referência sustenta. Não usar imagens aleatórias ou diagramas estrangeiros como única fonte de verdade.
+## Limite anatômico importante
+
+O modelo 3D licenciado representa a **aparência externa do animal**. Ele não contém peças comerciais separadas, músculos individualizados nem superfícies de corte. Por isso:
+- os quatro hotspots são referências visuais aproximadas para grandes regiões;
+- não são polígonos de desossa nem fronteiras anatômicas oficiais;
+- a lista de cortes associados é informativa e pode variar conforme o padrão de desossa e a nomenclatura comercial;
+- não há promessa de que clicar num hotspot seleciona o volume 3D exato de um corte.
+
+A próxima fase anatômica exige um modelo próprio com objetos/malhas separados por peça, além da conferência dos limites com documentação técnica brasileira e validação de um profissional de desossa. Só então deve ser ativada uma visão interna ou a seleção precisa de cortes.
+
+## Critérios para revisão
+
+- Confirmar carregamento do GLB principal no domínio de produção e funcionamento do fallback.
+- Verificar orientação do modelo e posicionamento dos hotspots em monitor e celular.
+- Confirmar rotação, zoom, reinício da câmera e seleção por toque/teclado.
+- Executar `npm install`, `npm run lint`, `npx tsc --noEmit` e `npm run build`.
+- Garantir que vitrine, carrinho, navegação, WhatsApp e seções existentes continuem funcionando.
+
+## Próxima evolução
+
+1. Hospedar um modelo externo e anatômico sob controle do projeto.
+2. Criar ou adquirir malhas musculares / comerciais independentes.
+3. Criar um manifesto com ID interno, nome comercial brasileiro, sinônimos, região, fonte e status de validação por peça.
+4. Conectar cada peça validada a produtos reais do catálogo, sem inventar estoque ou preço.
