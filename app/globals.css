@@ -784,3 +784,397 @@ section[id] { scroll-margin-top: 96px; }
   .hours-grid p { font-size: 11px; }
 }
 
+
+
+/* Mapa bovino 3D — visualização editorial e responsiva */
+.beef3d-section {
+  background: #f2eee7;
+  color: #29241e;
+}
+.beef3d-section .map-intro h2 em { color: #7a1c1c; }
+.beef3d-workspace {
+  display: grid;
+  grid-template-columns: minmax(0,1.52fr) minmax(330px,.78fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.beef3d-viewer-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #dcd2c5;
+  border-radius: 9px;
+  background: #171614;
+  box-shadow: 0 14px 34px rgba(43,34,24,.09);
+}
+.beef3d-viewer-topbar {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 22px;
+  background: #201e1b;
+  color: #f5eee5;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.beef3d-viewer-topbar>div {
+  display: grid;
+  gap: 5px;
+}
+.beef3d-kicker,.beef3d-details-heading>span {
+  color: #bd9664;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+.beef3d-viewer-topbar strong {
+  color: #f5eee5;
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 500;
+}
+.beef3d-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #d2c7b8;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  white-space: nowrap;
+}
+.beef3d-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #89a47a;
+  box-shadow: 0 0 0 4px rgba(137,164,122,.12);
+}
+.beef3d-stage {
+  position: relative;
+  height: 530px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 46%,rgba(117,91,62,.25),transparent 49%),
+    linear-gradient(145deg,#25221e 0%,#171614 53%,#11100f 100%);
+}
+.beef3d-stage canvas { display: block; width: 100% !important; height: 100% !important; touch-action: pan-y; }
+.beef3d-stage-caption {
+  position: absolute;
+  z-index: 3;
+  top: 17px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgba(236,222,203,.61);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.35px;
+  pointer-events: none;
+}
+.beef3d-axis-note {
+  position: absolute;
+  z-index: 3;
+  left: 20px;
+  bottom: 17px;
+  color: rgba(236,222,203,.5);
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  pointer-events: none;
+}
+.beef3d-canvas-loading {
+  min-height: 530px;
+  display: grid;
+  place-items: center;
+  color: #d7c9b8;
+  font-size: 12px;
+  letter-spacing: .5px;
+  background: radial-gradient(ellipse at center,#30281f 0%,#171614 72%);
+}
+.beef3d-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 13px;
+  padding: 14px 17px;
+  background: #201e1b;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.beef3d-mode-switch,.beef3d-utility-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.beef3d-mode-switch button,.beef3d-utility-controls button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(234,220,201,.16);
+  border-radius: 4px;
+  background: transparent;
+  color: #c9beb0;
+  padding: 8px 11px;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background .2s ease,border-color .2s ease,color .2s ease;
+}
+.beef3d-mode-switch button:hover,.beef3d-utility-controls button:hover {
+  border-color: rgba(189,150,100,.65);
+  color: #fff;
+}
+.beef3d-mode-switch button.is-active,.beef3d-utility-controls button.is-active {
+  border-color: #bd9664;
+  background: rgba(189,150,100,.15);
+  color: #f0d2a9;
+}
+.beef3d-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 27px 27px 22px;
+  border: 1px solid #e1d8cc;
+  border-radius: 9px;
+  background: #fffdfa;
+  box-shadow: 0 10px 28px rgba(43,34,24,.045);
+}
+.beef3d-details-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee6dc;
+}
+.beef3d-details-heading small {
+  color: #9d9284;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.beef3d-region-list {
+  display: grid;
+  gap: 4px;
+  margin: 13px 0 22px;
+}
+.beef3d-region-option {
+  min-height: 47px;
+  display: grid;
+  grid-template-columns: 30px 1fr 9px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  padding: 7px 10px;
+  color: #70675c;
+  text-align: left;
+  cursor: pointer;
+  transition: background .2s ease,border-color .2s ease,color .2s ease;
+}
+.beef3d-region-option:hover { background: #f8f4ed; color: #352c23; }
+.beef3d-region-option.is-active {
+  border-color: #e7d7c2;
+  background: #f7f0e6;
+  color: #3c2c1f;
+}
+.beef3d-region-number {
+  color: #a18b71;
+  font-size: 9px;
+  letter-spacing: .8px;
+}
+.beef3d-region-label {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.1;
+}
+.beef3d-region-indicator {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #b5a18a;
+  border-radius: 50%;
+}
+.beef3d-region-option.is-active .beef3d-region-indicator {
+  border-color: #8a552e;
+  background: #8a552e;
+  box-shadow: 0 0 0 3px rgba(138,85,46,.12);
+}
+.beef3d-selected-region {
+  min-height: 0;
+}
+.beef3d-selected-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #9a7042;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.35px;
+}
+.beef3d-selected-region h3 {
+  margin: 12px 0 8px;
+  color: #29241e;
+  font-family: var(--serif);
+  font-size: clamp(33px,3vw,43px);
+  font-weight: 500;
+  line-height: 1;
+}
+.beef3d-selected-region>p {
+  margin: 0;
+  color: #71695f;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.beef3d-associated-cuts {
+  margin-top: 19px;
+  padding-top: 16px;
+  border-top: 1px solid #eee6dc;
+}
+.beef3d-associated-cuts>span,.beef3d-preparation>div>span {
+  display: block;
+  margin-bottom: 9px;
+  color: #9b8b77;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+.beef3d-associated-cuts>div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.beef3d-associated-cuts>div>span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  border: 1px solid #e8dfd3;
+  border-radius: 2px;
+  background: #fbf8f2;
+  color: #5d5144;
+  padding: 5px 8px;
+  font-size: 10px;
+}
+.beef3d-preparation {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.beef3d-preparation>div>strong {
+  display: block;
+  color: #3c342b;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+.beef3d-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: auto;
+  padding: 14px 12px 0;
+  border-top: 1px solid #eee6dc;
+  color: #9a7042;
+}
+.beef3d-disclaimer svg { flex: 0 0 auto; margin-top: 1px; }
+.beef3d-disclaimer p {
+  margin: 0;
+  color: #81766a;
+  font-size: 9px;
+  line-height: 1.6;
+}
+.beef3d-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 14px;
+  color: #9b8b77;
+  font-size: 8px;
+  letter-spacing: 1.25px;
+}
+.beef3d-hotspot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 29px;
+  border: 1px solid rgba(234,206,165,.72);
+  border-radius: 3px;
+  background: rgba(24,21,18,.88);
+  color: #f2dfc2;
+  padding: 5px 8px;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,0,0,.32);
+  transition: transform .2s ease,background .2s ease,border-color .2s ease;
+}
+.beef3d-hotspot:hover,.beef3d-hotspot.is-active {
+  transform: translateY(-2px);
+  border-color: #f0c48c;
+  background: rgba(117,65,34,.94);
+}
+.beef3d-hotspot-index { color: #d7b27e; font-size: 8px; font-weight: 700; }
+.beef3d-hotspot-name { font-size: 9px; font-weight: 650; letter-spacing: .2px; }
+.beef3d-loading {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  min-width: 205px;
+  border: 1px solid rgba(231,205,170,.22);
+  border-radius: 6px;
+  background: rgba(24,21,18,.94);
+  color: #f1e5d3;
+  padding: 18px 20px;
+  text-align: center;
+}
+.beef3d-loading strong { font-size: 11px; font-weight: 600; }
+.beef3d-loading small { color: #b9aa97; font-size: 9px; }
+.beef3d-loading-error { border-color: rgba(220,153,121,.42); }
+.beef3d-spinner {
+  width: 21px;
+  height: 21px;
+  border: 2px solid rgba(222,194,156,.22);
+  border-top-color: #d5a66d;
+  border-radius: 50%;
+  animation: beef3d-spin .8s linear infinite;
+}
+@keyframes beef3d-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 980px) {
+  .beef3d-workspace { grid-template-columns: minmax(0,1.25fr) minmax(290px,.85fr); gap: 12px; }
+  .beef3d-stage,.beef3d-canvas-loading { height: 470px; min-height: 470px; }
+  .beef3d-details { padding: 22px 19px 18px; }
+  .beef3d-controls { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 760px) {
+  .beef3d-workspace { grid-template-columns: 1fr; }
+  .beef3d-stage,.beef3d-canvas-loading { height: min(112vw,480px); min-height: 340px; }
+  .beef3d-details { padding: 22px 20px 18px; }
+  .beef3d-region-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; margin-bottom: 20px; }
+  .beef3d-region-option { min-height: 43px; grid-template-columns: 23px 1fr 8px; gap: 7px; padding-inline: 8px; }
+  .beef3d-region-label { font-size: 17px; }
+  .beef3d-selected-region h3 { font-size: 36px; }
+  .beef3d-disclaimer { margin-top: 18px; }
+}
+@media (max-width: 460px) {
+  .beef3d-viewer-topbar { min-height: 65px; padding: 13px 14px; }
+  .beef3d-viewer-topbar strong { font-size: 20px; }
+  .beef3d-live { font-size: 7px; letter-spacing: .7px; }
+  .beef3d-stage,.beef3d-canvas-loading { height: 360px; min-height: 360px; }
+  .beef3d-stage-caption { top: 13px; left: 13px; right: 13px; font-size: 7px; letter-spacing: .8px; }
+  .beef3d-controls { padding: 12px; }
+  .beef3d-mode-switch { width: 100%; }
+  .beef3d-mode-switch button { flex: 1; padding-inline: 7px; font-size: 9px; }
+  .beef3d-utility-controls { width: 100%; }
+  .beef3d-utility-controls button { flex: 1; padding-inline: 7px; font-size: 9px; }
+  .beef3d-footnote { align-items: flex-start; flex-direction: column; gap: 6px; font-size: 7px; }
+  .beef3d-region-list { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .beef3d-spinner { animation: none; }
+  .beef3d-hotspot,.beef3d-region-option,.beef3d-mode-switch button { transition: none; }
+}
