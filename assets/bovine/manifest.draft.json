@@ -1,0 +1,229 @@
+{
+  "version": 1,
+  "status": "draft-awaiting-segmented-model",
+  "asset": {
+    "file": null,
+    "source": null,
+    "licenseEvidence": null,
+    "webUseApproved": false
+  },
+  "pieces": [
+    {
+      "id": "picanha",
+      "name": "Picanha",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "maminha",
+      "name": "Maminha",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "coracao-alcatra",
+      "name": "Cora��o da alcatra",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "file-mignon",
+      "name": "Fil�-mignon",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "file-costela",
+      "name": "Fil� de costela",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "file-lombo",
+      "name": "Fil� de lombo",
+      "priority": 1,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "acem",
+      "name": "Ac�m",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "peito",
+      "name": "Peito",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "raquete",
+      "name": "Raquete",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "peixinho",
+      "name": "Peixinho",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "coracao-paleta",
+      "name": "Cora��o da paleta",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "musculo-dianteiro",
+      "name": "M�sculo do dianteiro",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "coxao-mole",
+      "name": "Cox�o mole",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "coxao-duro",
+      "name": "Cox�o duro",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "lagarto",
+      "name": "Lagarto",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "patinho",
+      "name": "Patinho",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "costela-dianteiro",
+      "name": "Costela do dianteiro",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    },
+    {
+      "id": "costela-traseiro",
+      "name": "Costela do traseiro",
+      "priority": 2,
+      "nodes": [],
+      "source": "https://old.cnpgc.embrapa.br/publicacoes/naoseriadas/cortes/",
+      "validation": {
+        "status": "pending",
+        "evidence": null
+      },
+      "productIds": []
+    }
+  ]
+}
+
