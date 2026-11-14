@@ -34,7 +34,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
       ? `• ${line.name} — ${line.weightLabel} × ${line.quantity}`
       : `• ${line.name} × ${line.quantity}`),
     "",
-    `Peso estimado dos cortes: ${formatWeight(totalGrams)}`,
+    "Peso estimado dos cortes: " + (totalGrams > 0 ? formatWeight(totalGrams) : "a confirmar"),
     "Gostaria de confirmar disponibilidade, peso final e valores.",
   ].join("\n");
   const whatsappUrl = `https://wa.me/${shop.whatsapp}?text=${encodeURIComponent(message)}`;
@@ -107,8 +107,8 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
 
                 <footer className="cart-foot">
                   <div className="cart-weight-total">
-                    <div><span>PESO TOTAL ESTIMADO</span><strong>{formatWeight(totalGrams)}</strong></div>
-                    <div className="people-estimate"><Flame size={15}/><span>Ideal para aproximadamente <b>{people} {people === 1 ? "pessoa" : "pessoas"}</b></span></div>
+                    <div><span>PESO TOTAL ESTIMADO</span><strong>{totalGrams > 0 ? formatWeight(totalGrams) : "—"}</strong></div>
+                    <div className="people-estimate"><Flame size={15}/><span>{people > 0 ? <>Ideal para aproximadamente <b>{people} {people === 1 ? "pessoa" : "pessoas"}</b></> : "Adicione um corte para calcular as porções"}</span></div>
                     {hasWholePiece && <small>* Peças inteiras têm peso variável; a equipe confirma o peso final.</small>}
                   </div>
                   <div className="cart-price-note"><span>Valores dos cortes</span><strong>Confirmar com a equipe</strong></div>
