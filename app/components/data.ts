@@ -35,7 +35,7 @@ export const cuts: Cut[] = [
   {
     id: "ancho-wagyu-a5",
     name: "Ancho Wagyu A5",
-    category: "Cortes Nobres",
+    category: "Carnes Bovinas",
     description: "Marmoreio intenso, textura delicada e sabor amanteigado",
     rawImage: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1100&q=90",
     grilledImage: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1100&q=90",
@@ -45,7 +45,7 @@ export const cuts: Cut[] = [
   {
     id: "picanha-black-angus",
     name: "Picanha Black Angus",
-    category: "Cortes Nobres",
+    category: "Carnes Bovinas",
     description: "Capa de gordura uniforme e fibras macias",
     rawImage: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1100&q=90",
     grilledImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1100&q=90",
@@ -65,7 +65,7 @@ export const cuts: Cut[] = [
   {
     id: "prime-rib",
     name: "Prime Rib",
-    category: "Cortes Nobres",
+    category: "Carnes Bovinas",
     description: "Costela alta com equilíbrio entre carne e gordura",
     rawImage: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?auto=format&fit=crop&w=1100&q=90",
     grilledImage: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1100&q=90",
@@ -74,7 +74,7 @@ export const cuts: Cut[] = [
   {
     id: "short-rib",
     name: "Short Rib",
-    category: "Cortes Nobres",
+    category: "Churrasco",
     description: "Fibras entremeadas e personalidade marcante",
     rawImage: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=1100&q=90",
     grilledImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1100&q=90",
@@ -83,7 +83,7 @@ export const cuts: Cut[] = [
   {
     id: "chorizo-argentino",
     name: "Chorizo Argentino",
-    category: "Cortes Nobres",
+    category: "Churrasco",
     description: "Corte alto, suculento e com sabor de parrilla",
     rawImage: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=1100&q=90",
     grilledImage: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1100&q=90",
