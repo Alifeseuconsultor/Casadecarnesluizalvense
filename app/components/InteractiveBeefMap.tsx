@@ -18,6 +18,7 @@ export default function InteractiveBeefMap() {
   const [resetKey, setResetKey] = useState(0);
 
   const selected = beefRegions.find((region) => region.id === selectedId) ?? beefRegions[0];
+  const selectedIndex = beefRegions.findIndex((region) => region.id === selected.id) + 1;
 
   const chooseRegion = useCallback((region: BeefRegion) => {
     setSelectedId(region.id);
@@ -106,14 +107,13 @@ export default function InteractiveBeefMap() {
           <aside className="beef3d-details" aria-live="polite">
             <div className="beef3d-details-heading">
               <span>EXPLORAR POR REGIÃO</span>
-              <small>01 — 04</small>
+              <small>0{selectedIndex} / 04</small>
             </div>
 
-            <div className="beef3d-region-list" role="list" aria-label="Regiões bovinas">
+            <div className="beef3d-region-list" role="group" aria-label="Regiões bovinas">
               {beefRegions.map((region, index) => (
                 <button
                   type="button"
-                  role="listitem"
                   key={region.id}
                   className={selectedId === region.id ? "beef3d-region-option is-active" : "beef3d-region-option"}
                   onClick={() => chooseRegion(region)}
