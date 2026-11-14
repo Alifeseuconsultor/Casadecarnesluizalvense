@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 type Product = {
   id: number;
@@ -256,7 +256,7 @@ export default function Home() {
     });
 
   const scrollCatalog = () => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
-  const scrollCarousel = (ref: React.RefObject<HTMLDivElement | null>, direction: number) => {
+  const scrollCarousel = (ref: RefObject<HTMLDivElement | null>, direction: number) => {
     if (!ref.current) return;
     ref.current.scrollBy({ left: direction * ref.current.clientWidth * 0.78, behavior: "smooth" });
   };
