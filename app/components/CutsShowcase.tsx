@@ -102,7 +102,7 @@ export default function CutsShowcase({ onAdd }: CutsShowcaseProps) {
           </div>
           <label className="catalog-search">
             <Search size={15}/>
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar cortes..."/>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} type="search" aria-label="Buscar cortes por nome ou descrição" placeholder="Buscar cortes..."/>
           </label>
         </div>
 
@@ -123,7 +123,7 @@ export default function CutsShowcase({ onAdd }: CutsShowcaseProps) {
           </aside>
 
           <div className="catalog-results">
-            <div className="catalog-results-top"><span>Exibindo {filteredCuts.length} de {cuts.length} cortes</span><span>SELEÇÃO <strong>LUIS ALVENSE</strong></span></div>
+            <div className="catalog-results-top"><span>Exibindo {filteredCuts.length} de {cuts.length} cortes</span><span>SELEÇÃO <strong>LUIZ ALVENSE</strong></span></div>
             <motion.div className="cuts-grid" layout initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.075 } } }}>
               <AnimatePresence mode="popLayout">
                 {filteredCuts.map((cut) => <CutCard key={cut.id} cut={cut} onAdd={onAdd}/>)}

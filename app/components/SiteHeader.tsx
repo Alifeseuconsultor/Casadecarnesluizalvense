@@ -18,6 +18,15 @@ function BrandMark() {
   );
 }
 
+const links = [
+  { label: "Início", href: "#inicio" },
+  { label: "Cortes", href: "#cortes" },
+  { label: "Mapa do boi", href: "#mapa-do-boi" },
+  { label: "Dry Aged", href: "#dry-aged" },
+  { label: "Kits", href: "#kits-churrasco" },
+  { label: "Contato", href: "#contato" },
+];
+
 export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,21 +38,25 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
     return () => window.removeEventListener("scroll", update);
   }, []);
 
-  const links = [
-    ["Cortes Nobres", "#cortes"],
-    ["Mapa do Boi", "#mapa-do-boi"],
-    ["Dry Aged", "#dry-aged"],
-    ["Kits Churrasco", "#harmonizacao"],
-  ];
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <motion.header
       className={scrolled ? "lux-header is-scrolled" : "lux-header"}
-      initial={{ y: -26, opacity: 0 }}
+      initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
     >
-      <a href="#inicio" className="lux-brand" aria-label="Casa de Carnes Luiz Alvense, início">
+      <a href="#inicio" className="lux-brand" aria-label="Casa de Carnes Luiz Alvense, início" onClick={closeMenu}>
         <span className="lux-brand-mark"><BrandMark /></span>
         <span className="lux-brand-type">
           <small>CASA DE CARNES</small>
@@ -53,7 +66,7 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
       </a>
 
       <nav className="lux-nav" aria-label="Navegação principal">
-        {links.map(([label, href]) => <a href={href} key={href}>{label}</a>)}
+        {links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}
       </nav>
 
       <div className="lux-header-actions">
@@ -63,7 +76,14 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
           <span>Carrinho</span>
           <b>{cartCount}</b>
         </button>
-        <button className="mobile-menu-trigger" type="button" aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} onClick={() => setMenuOpen((v) => !v)}>
+        <button
+          className="mobile-menu-trigger"
+          type="button"
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-primary-navigation"
+          onClick={() => setMenuOpen((value) => !value)}
+        >
           {menuOpen ? <X size={20}/> : <Menu size={20}/>}
         </button>
       </div>
@@ -71,14 +91,20 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
       <AnimatePresence>
         {menuOpen && (
           <motion.nav
+            id="mobile-primary-navigation"
             className="mobile-nav"
-            initial={{ opacity: 0, y: -8, height: 0 }}
+            aria-label="Navegação para celular"
+            initial={{ opacity: 0, y: -6, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
-            exit={{ opacity: 0, y: -8, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: -6, height: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            {links.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}
-            <button type="button" onClick={() => { setMenuOpen(false); onCartOpen(); }}><ShoppingBag size={16}/> Abrir carrinho ({cartCount})</button>
+            {links.map((link) => (
+              <a href={link.href} key={link.href} onClick={closeMenu}>{link.label}</a>
+            ))}
+            <button type="button" onClick={() => { closeMenu(); onCartOpen(); }}>
+              <ShoppingBag size={16}/> Abrir carrinho ({cartCount})
+            </button>
           </motion.nav>
         )}
       </AnimatePresence>
