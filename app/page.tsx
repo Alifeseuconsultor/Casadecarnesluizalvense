@@ -9,84 +9,91 @@ type Product = {
   price: string;
   detail: string;
   image: string;
-  badge: string;
+  badge?: string;
 };
 
-const categories = ["Todos", "Bovinos", "Churrasco", "Aves", "Suínos", "Linguiças"];
+const categories = ["Todos", "Carnes Bovinas", "Carnes Suínas", "Aves", "Linguiças", "Churrasco", "Especiais"];
 
 const products: Product[] = [
   {
     id: 1,
-    name: "Picanha seleção da casa",
-    category: "Churrasco",
+    name: "Picanha",
+    category: "Carnes Bovinas",
     price: "R$ 89,90",
-    detail: "Capa uniforme · maciez e sabor",
+    detail: "Corte selecionado, macio e suculento",
     image: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85",
     badge: "MAIS PEDIDO",
   },
   {
     id: 2,
-    name: "Contrafilé premium",
-    category: "Bovinos",
+    name: "Contrafilé",
+    category: "Carnes Bovinas",
     price: "R$ 79,90",
-    detail: "Marmoreio delicado · corte especial",
+    detail: "Marmoreio especial e sabor marcante",
     image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=900&q=85",
-    badge: "SELEÇÃO PREMIUM",
   },
   {
     id: 3,
-    name: "Alcatra especial",
-    category: "Bovinos",
+    name: "Alcatra",
+    category: "Carnes Bovinas",
     price: "R$ 69,90",
-    detail: "Versátil, macia e muito saborosa",
+    detail: "Versátil, macia e perfeita para o dia a dia",
     image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85",
-    badge: "ESCOLHA DO AÇOUGUEIRO",
   },
   {
     id: 4,
-    name: "Costela janela",
+    name: "Costela",
     category: "Churrasco",
     price: "R$ 49,90",
-    detail: "Ideal para fogo baixo e bons encontros",
+    detail: "Ideal para assar lentamente e compartilhar",
     image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=85",
-    badge: "PARA COMPARTILHAR",
   },
   {
     id: 5,
-    name: "Coração de frango",
-    category: "Aves",
-    price: "R$ 34,90",
-    detail: "Limpo e pronto para sua churrasqueira",
-    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=900&q=85",
-    badge: "PRÁTICO",
+    name: "Fraldinha",
+    category: "Carnes Bovinas",
+    price: "R$ 59,90",
+    detail: "Sabor intenso e fibras delicadas",
+    image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=900&q=85",
   },
   {
     id: 6,
+    name: "Coração de frango",
+    category: "Aves",
+    price: "R$ 34,90",
+    detail: "Limpo e pronto para a churrasqueira",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: 7,
     name: "Linguiça artesanal",
     category: "Linguiças",
     price: "R$ 39,90",
-    detail: "Tempero equilibrado · feita com cuidado",
+    detail: "Tempero equilibrado, feita com cuidado",
     image: "https://images.unsplash.com/photo-1626844131082-256783844137?auto=format&fit=crop&w=900&q=85",
-    badge: "ARTESANAL",
+  },
+  {
+    id: 8,
+    name: "Short rib",
+    category: "Especiais",
+    price: "R$ 74,90",
+    detail: "Corte especial para momentos especiais",
+    image: "https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=900&q=85",
   },
 ];
 
 function BullMark() {
   return (
-    <svg className="bull-mark" viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M11 13C7 12 5 7 4 4c5 5 10 5 16 5 5 0 9 3 12 7 3-4 7-7 12-7 6 0 11 0 16-5-1 3-3 8-7 9-1 10-5 17-13 21l-2 12-6 7-6-7-2-12c-8-4-12-11-13-21Z" fill="currentColor" />
-      <path d="M22 28c3-2 6-2 10 0 4-2 7-2 10 0M27 39h10M29 45h6" fill="none" stroke="#17130f" strokeWidth="2.2" strokeLinecap="round" />
+    <svg className="bull-mark" viewBox="0 0 72 72" aria-hidden="true">
+      <path d="M8 12C5 9 3 4 3 2c6 6 13 8 21 8 5 0 9 3 12 7 3-4 7-7 12-7 8 0 15-2 21-8 0 2-2 7-5 10 0 12-5 21-16 26l-2 14-9 12-9-12-2-14C14 33 9 24 8 12Z" fill="currentColor"/>
+      <path d="M23 29c4-3 9-3 13 0 4-3 9-3 13 0M28 42h16M31 49h10" fill="none" stroke="#17130f" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M12 17 5 11M60 17l7-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
 }
 
 function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="10.8" cy="10.8" r="6.8" />
-      <path d="m16 16 5 5" />
-    </svg>
-  );
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>;
 }
 
 export default function Home() {
@@ -97,25 +104,14 @@ export default function Home() {
   const visibleProducts = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("pt-BR");
     return products.filter((product) => {
-      const matchesCategory =
-        activeCategory === "Todos" ||
-        product.category === activeCategory;
-      const matchesSearch =
-        !term ||
-        product.name.toLocaleLowerCase("pt-BR").includes(term) ||
-        product.detail.toLocaleLowerCase("pt-BR").includes(term);
+      const matchesCategory = activeCategory === "Todos" || product.category === activeCategory;
+      const matchesSearch = !term || product.name.toLocaleLowerCase("pt-BR").includes(term) || product.detail.toLocaleLowerCase("pt-BR").includes(term);
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, search]);
 
   return (
     <main className="storefront">
-      <div className="topline">
-        <span>QUALIDADE EM CADA DETALHE</span>
-        <span className="topline-dot">◆</span>
-        <span>ATENDIMENTO PRÓXIMO E SELEÇÃO ESPECIAL</span>
-      </div>
-
       <header className="store-header">
         <a className="store-brand" href="#inicio" aria-label="Casa de Carnes Luiz Alvense - início">
           <span className="brand-symbol"><BullMark /></span>
@@ -127,7 +123,6 @@ export default function Home() {
         </a>
 
         <label className="store-search">
-          <SearchIcon />
           <input
             value={search}
             onChange={(event) => {
@@ -137,17 +132,15 @@ export default function Home() {
             placeholder="O que você procura?"
             aria-label="Buscar produtos"
           />
-          <kbd>⌕</kbd>
+          <button type="button" aria-label="Buscar"><SearchIcon /></button>
         </label>
 
         <div className="header-actions">
           <button className="icon-action" aria-label="Minha conta" type="button">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M4.5 20c.8-3.5 3.3-5.3 7.5-5.3s6.7 1.8 7.5 5.3" /></svg>
-            <span>Minha conta</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.5 3.3-5.3 7.5-5.3s6.7 1.8 7.5 5.3"/></svg>
           </button>
           <button className="icon-action cart-action" aria-label="Sacola de compras" type="button" onClick={() => document.getElementById("destaques")?.scrollIntoView({ behavior: "smooth" })}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6" /><circle cx="10" cy="20" r="1.2" /><circle cx="18" cy="20" r="1.2" /></svg>
-            <span>Sacola</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg>
             {cartCount > 0 && <b className="cart-count">{cartCount}</b>}
           </button>
         </div>
@@ -157,17 +150,11 @@ export default function Home() {
         <div className="hero-photo" />
         <div className="hero-overlay" />
         <div className="hero-content">
-          <div className="eyebrow"><span /> SELEÇÃO ESPECIAL LUIZ ALVENSE</div>
-          <h1>Carne de qualidade,<br /><em>sempre!</em></h1>
-          <p>Sabor e confiança em cada escolha.<br />Do nosso cuidado para a sua mesa.</p>
+          <h1>Carne de<br/>qualidade,<br/><em>sempre!</em></h1>
+          <p>Sabor e confiança<br/>em cada escolha.</p>
           <a className="hero-button" href="#destaques">Ver ofertas <span>→</span></a>
         </div>
-        <div className="hero-seal">
-          <span>QUALIDADE</span>
-          <strong><BullMark /></strong>
-          <span>SELECIONADA</span>
-        </div>
-        <div className="hero-caption"><span>01</span><i /> CORTES ESCOLHIDOS A DEDO</div>
+        <div className="hero-caption"><span>SELEÇÃO ESPECIAL</span><i/> CASA DE CARNES LUIZ ALVENSE</div>
       </section>
 
       <section className="benefits" aria-label="Benefícios">
@@ -180,7 +167,7 @@ export default function Home() {
           <span><strong>Compra segura</strong><small>Seus dados protegidos</small></span>
         </div>
         <div className="benefit-item">
-          <span className="benefit-icon">✦</span>
+          <span className="benefit-icon">★</span>
           <span><strong>Qualidade premium</strong><small>Seleção em cada detalhe</small></span>
         </div>
       </section>
@@ -188,11 +175,10 @@ export default function Home() {
       <section className="featured-section" id="destaques">
         <div className="section-heading">
           <div>
-            <div className="section-kicker"><span /> NOSSA SELEÇÃO</div>
-            <h2>Nossos <em>destaques</em></h2>
-            <p>Cortes especiais escolhidos para deixar cada refeição ainda melhor.</p>
+            <h2>Nossos Destaques</h2>
+            <p>Cortes selecionados especialmente para você.</p>
           </div>
-          <a className="see-all" href="#catalogo">Ver todo o catálogo <span>↗</span></a>
+          <a className="see-all" href="#catalogo">Ver todos <span>→</span></a>
         </div>
 
         <div className="category-pills" aria-label="Filtrar por categoria">
@@ -209,21 +195,16 @@ export default function Home() {
         </div>
 
         <div className="product-grid" id="catalogo">
-          {visibleProducts.slice(0, 4).map((product) => (
+          {visibleProducts.slice(0, 8).map((product) => (
             <article className="product-card" key={product.id}>
               <div className="product-image">
-                <img src={product.image} alt={product.name} />
-                <span className="product-badge">{product.badge}</span>
-                <button className="quick-add" type="button" aria-label={"Adicionar " + product.name + " à sacola"} onClick={() => setCartCount((count) => count + 1)}>+</button>
+                <img src={product.image} alt={product.name}/>
+                {product.badge && <span className="product-badge">{product.badge}</span>}
               </div>
               <div className="product-info">
-                <div className="product-meta">{product.category} <span>•</span> POR KG</div>
                 <h3>{product.name}</h3>
-                <p>{product.detail}</p>
-                <div className="product-bottom">
-                  <div><strong>{product.price}</strong><small>/ kg</small></div>
-                  <button type="button" onClick={() => setCartCount((count) => count + 1)}>Adicionar <span>+</span></button>
-                </div>
+                <p>{product.price}<small>/kg</small></p>
+                <button type="button" onClick={() => setCartCount((count) => count + 1)}>Adicionar <span>+</span></button>
               </div>
             </article>
           ))}
@@ -231,21 +212,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-band">
-        <div className="editorial-copy">
-          <div className="section-kicker light"><span /> O PADRÃO LUIZ ALVENSE</div>
-          <h2>Mais que um corte.<br /><em>Uma escolha de qualidade.</em></h2>
-          <p>Da seleção ao atendimento, cada detalhe é pensado para você comprar bem e receber o melhor.</p>
-        </div>
-        <a href="#destaques" className="editorial-link">Conheça nossa seleção <span>↗</span></a>
-      </section>
-
       <footer className="store-footer">
         <a className="store-brand footer-brand" href="#inicio">
           <span className="brand-symbol"><BullMark /></span>
           <span className="brand-name"><small>CASA DE CARNES</small><strong>LUIZ ALVENSE</strong><em>QUALIDADE EM CADA DETALHE</em></span>
         </a>
-        <span>TRADIÇÃO, CUIDADO E SABOR.</span>
+        <span>QUALIDADE EM CADA DETALHE.</span>
         <span>© 2026 CASA DE CARNES LUIZ ALVENSE</span>
       </footer>
 
