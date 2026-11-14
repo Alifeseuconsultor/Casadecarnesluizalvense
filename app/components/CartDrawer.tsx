@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Flame, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { pairings, shop, type CartLine } from "./data";
@@ -22,7 +21,6 @@ const formatWeight = (grams: number) => {
 };
 
 export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove, onAddPairing }: CartDrawerProps) {
-  const panelRef = useRef<HTMLElement>(null);
   const cuts = lines.filter((line) => line.category === "cut");
   const extras = lines.filter((line) => line.category === "pairing");
   const totalGrams = cuts.reduce((total, line) => total + line.gramsPerUnit * line.quantity, 0);
@@ -47,7 +45,6 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
         <div className="cart-overlay-root">
           <motion.button className="cart-scrim" type="button" aria-label="Fechar carrinho" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .28 }}/>
           <motion.aside
-            ref={panelRef}
             className="boutique-cart"
             role="dialog"
             aria-modal="true"
