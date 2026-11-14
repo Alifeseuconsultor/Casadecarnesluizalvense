@@ -10,7 +10,7 @@ export default function Hero() {
   const x = useSpring(useMotionValue(0), { stiffness: 170, damping: 18, mass: 0.22 });
   const y = useSpring(useMotionValue(0), { stiffness: 170, damping: 18, mass: 0.22 });
   const embers = useMemo(() => Array.from({ length: 18 }, (_, index) => ({
-    left: \`${(index * 37 + 11) % 100}%\`,
+    left: String((index * 37 + 11) % 100) + "%",
     delay: (index % 6) * 0.8,
     duration: 7 + (index % 5) * 1.4,
     size: 2 + (index % 3),
