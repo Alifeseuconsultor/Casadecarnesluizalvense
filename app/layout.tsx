@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Casa de Carnes Luiz Alvense | Seleção especial",
-  description: "Cortes selecionados, cuidado em cada detalhe. Escolha seus cortes favoritos e agende sua retirada.",
+  title: "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",
+  description: "Uma experiência boutique em carnes nobres, cortes selecionados, maturação Dry Aged e atendimento próximo em Luiz Alves, Santa Catarina.",
   applicationName: "Casa de Carnes Luiz Alvense"
 };
 
