@@ -26,7 +26,7 @@ export default function Hero() {
   return (
     <section className="cinematic-hero" id="inicio">
       <div className="hero-background">
-        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2400&q=92" alt="Corte de carne nobre finalizado na brasa" fetchPriority="high"/>
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2400&q=92" alt="Corte de carne nobre finalizado na brasa" fetchPriority="high" onError={(event) => { event.currentTarget.style.display = "none"; }}/>
       </div>
       <div className="hero-vignette"/>
       <div className="hero-grain"/>
