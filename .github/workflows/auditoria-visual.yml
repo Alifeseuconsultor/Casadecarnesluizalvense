@@ -52,4 +52,6 @@ jobs:
           git add -f .audit/screenshots/*.png .audit/site-report.json
           git diff --cached --quiet && exit 0
           git commit -m "test(visual): capturas desktop e mobile de todas as secoes"
+          git fetch origin consolidacao/site-final-20261118
+          git rebase origin/consolidacao/site-final-20261118
           git push origin HEAD:consolidacao/site-final-20261118
