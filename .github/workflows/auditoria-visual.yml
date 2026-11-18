@@ -1,0 +1,45 @@
+name: Auditoria visual completa do site
+
+on:
+  push:
+    branches: [consolidacao/site-final-20261118]
+    paths:
+      - '.github/workflows/auditoria-visual.yml'
+      - 'scripts/audit-site.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Instalar navegador de auditoria
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium --with-deps
+      - name: Capturar desktop e mobile
+        env:
+          AUDIT_URL: https://casadecarnesluizalvense-git-con-debb34-alifes-projects-601748ef.vercel.app
+        run: node scripts/audit-site.mjs
+      - name: Guardar imagens e relatorio
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-visual-site
+          path: .audit/
+          if-no-files-found: warn
+      - name: Registrar capturas na branch de trabalho
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f .audit/screenshots/*.png .audit/site-report.json
+          git diff --cached --quiet && exit 0
+          git commit -m "test(visual): capturas desktop e mobile de todas as secoes"
+          git push origin HEAD:consolidacao/site-final-20261118
