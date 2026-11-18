@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Flame, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { pairings, shop, type CartLine } from "./data";
@@ -22,6 +22,8 @@ const formatWeight = (grams: number) => {
 };
 
 export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove, onAddPairing }: CartDrawerProps) {
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const cuts = lines.filter((line) => line.category === "cut");
   const extras = lines.filter((line) => line.category === "pairing");
   const totalGrams = cuts.reduce((total, line) => total + line.gramsPerUnit * line.quantity, 0);
@@ -42,13 +44,30 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
 
   useEffect(() => {
     if (!open) return;
-    const handleKey = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { event.preventDefault(); onClose(); return; }
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusables = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(focusableSelector)).filter((element) => element.getClientRects().length > 0);
+      if (focusables.length === 0) { event.preventDefault(); dialogRef.current.focus(); return; }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !dialogRef.current.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !dialogRef.current.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+    };
+    // Garante foco inicial após a montagem do painel animado.
+    const focusFrame = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKey);
     return () => {
       window.removeEventListener("keydown", handleKey);
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
     };
   }, [open, onClose]);
 
@@ -59,6 +78,8 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
           <motion.button className="cart-scrim" type="button" aria-label="Fechar carrinho" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .28 }}/>
           <motion.aside
             className="boutique-cart"
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="cart-heading"
@@ -69,7 +90,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
           >
             <header className="cart-head">
               <div><span>SUA SELEÇÃO PARTICULAR</span><h2 id="cart-heading">Seu pedido <em>({lines.reduce((n, line) => n + line.quantity, 0)})</em></h2></div>
-              <button type="button" onClick={onClose} aria-label="Fechar carrinho"><X size={19}/></button>
+              <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Fechar carrinho"><X size={19}/></button>
             </header>
 
             {lines.length === 0 ? (

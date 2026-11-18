@@ -784,3 +784,44 @@ section[id] { scroll-margin-top: 96px; }
   .hours-grid p { font-size: 11px; }
 }
 
+
+
+/* Acessibilidade transversal: navegação por teclado e preferência por movimento reduzido */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-to-content {
+  position: fixed;
+  z-index: 110;
+  top: 12px;
+  left: 12px;
+  padding: 13px 18px;
+  color: var(--bg);
+  background: var(--copper-bright);
+  font-weight: 700;
+  transform: translateY(-160%);
+}
+.skip-to-content:focus-visible { transform: translateY(0); }
+:where(a, button, input, select, textarea, [role="button"]):focus-visible {
+  outline: 3px solid var(--copper-bright);
+  outline-offset: 3px;
+}
+#conteudo-principal:focus { outline: none; }
+:target { scroll-margin-top: 100px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

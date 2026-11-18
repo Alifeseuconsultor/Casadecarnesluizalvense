@@ -74,7 +74,8 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
         <button className="lux-cart-trigger" type="button" onClick={onCartOpen} aria-label={"Abrir carrinho, " + cartCount + " itens"}>
           <ShoppingBag size={19} strokeWidth={1.5}/>
           <span>Carrinho</span>
-          <b>{cartCount}</b>
+          <b aria-hidden="true">{cartCount}</b>
+          <span className="sr-only" aria-live="polite" aria-atomic="true">{cartCount} {cartCount === 1 ? "item selecionado" : "itens selecionados"}</span>
         </button>
         <button
           className="mobile-menu-trigger"

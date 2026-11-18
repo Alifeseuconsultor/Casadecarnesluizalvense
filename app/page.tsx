@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ArrowUpRight, Clock3, MapPin, Phone } from "lucide-react";
 import SiteHeader from "./components/SiteHeader";
 import Hero from "./components/Hero";
@@ -21,6 +21,7 @@ type Pairing = {
 export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartLines, setCartLines] = useState<CartLine[]>([]);
+  const closeCart = useCallback(() => setCartOpen(false), []);
 
   const cartCount = useMemo(() => cartLines.reduce((total, line) => total + line.quantity, 0), [cartLines]);
 
@@ -72,8 +73,9 @@ export default function Home() {
 
   return (
     <>
+      <a className="skip-to-content" href="#conteudo-principal">Ir para o conteúdo principal</a>
       <SiteHeader cartCount={cartCount} onCartOpen={() => setCartOpen(true)}/>
-      <main className="luxury-store">
+      <main className="luxury-store" id="conteudo-principal" tabIndex={-1}>
         <Hero/>
         <CutsShowcase onAdd={addCut}/>
         <InteractiveBeefMap/>
@@ -107,7 +109,7 @@ export default function Home() {
       <CartDrawer
         open={cartOpen}
         lines={cartLines}
-        onClose={() => setCartOpen(false)}
+        onClose={closeCart}
         onQuantity={changeQuantity}
         onRemove={removeLine}
         onAddPairing={addPairing}
