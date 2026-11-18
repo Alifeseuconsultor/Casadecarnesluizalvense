@@ -1,0 +1,72 @@
+[
+  {
+    "device": "desktop",
+    "status": 200,
+    "title": "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "scrollHeight": 5377,
+    "errors": [],
+    "sections": [
+      {
+        "id": "inicio",
+        "found": true
+      },
+      {
+        "id": "cortes",
+        "found": true
+      },
+      {
+        "id": "mapa-do-boi",
+        "found": true
+      },
+      {
+        "id": "dry-aged",
+        "found": true
+      },
+      {
+        "id": "kits-churrasco",
+        "found": true
+      },
+      {
+        "id": "contato",
+        "found": true
+      }
+    ]
+  },
+  {
+    "device": "mobile",
+    "status": 200,
+    "title": "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "scrollHeight": 5458,
+    "errors": [],
+    "sections": [
+      {
+        "id": "inicio",
+        "found": true
+      },
+      {
+        "id": "cortes",
+        "found": true
+      },
+      {
+        "id": "mapa-do-boi",
+        "found": true
+      },
+      {
+        "id": "dry-aged",
+        "found": true
+      },
+      {
+        "id": "kits-churrasco",
+        "found": true
+      },
+      {
+        "id": "contato",
+        "found": true
+      }
+    ]
+  }
+]
