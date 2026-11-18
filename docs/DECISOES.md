@@ -16,3 +16,5 @@ Para novas decisões, registre data, contexto, motivo, consequência e referênc
 ### Vitrine pública · 18 de novembro de 2026
 
 As sugestões de churrasco são um guia de preparo. Fotografias de referência que sugeriam produtos disponíveis deram lugar a texto e ícones. A marca e a imagem do balcão vêm do acervo Replit. A exibição do telefone, WhatsApp, endereço e horários depende da confirmação de cada dado. Os detalhes de configuração estão em [Integração de catálogo](INTEGRACAO-CATALOGO.md).
+
+A branch de consolidação é a referência visual preferida pelo proprietário. Da Boutique das Carnes, adotamos a faixa de ícones e nomes das categorias abaixo da marca. As opções vêm do catálogo ativo. Durante a indisponibilidade do catálogo, usamos os departamentos documentados pela Luiz Alvense.

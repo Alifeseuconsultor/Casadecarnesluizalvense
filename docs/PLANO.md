@@ -41,5 +41,6 @@ Após a solicitação de implementação, trabalhar por jornada na branch corres
 ### Vitrine pública da consolidação
 
 - [x] Inspecionar as 14 capturas iniciais e corrigir os problemas de apresentação encontrados na vitrine.
+- [x] Incluir navegação por categorias no cabeçalho, com filtro compartilhado e rolagem lateral no celular.
 - [ ] Conferir no ambiente comercial os produtos reais e os contatos oficiais.
 - [ ] Aprovação visual do proprietário e decisão de publicação.

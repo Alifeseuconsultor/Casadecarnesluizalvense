@@ -1,5 +1,9 @@
 # PASSAGEM DE BASTÃO — Casa de Carnes Luiz Alvense
 
+## Cabeçalho com categorias
+
+A vitrine da branch de consolidação é a base visual escolhida para continuar. A alteração `86871e6` acrescentou uma faixa com ícones de categorias logo abaixo da marca. O catálogo e o cabeçalho usam a mesma seleção. As capturas desta revisão estão em `0aa2953`. Veja o [cabeçalho antes e depois](../.audit/cabecalho-antes-depois.jpg), a [captura do celular](../.audit/screenshots/mobile-inicio.png) e os [testes de navegação](https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44309582595). A URL do catálogo comercial ainda está pendente.
+
 ## Revisão visual concluída na branch de consolidação
 
 A implementação está em `589301a` e as 19 capturas verificadas estão em `959f282`, na branch `consolidacao/site-final-20261118`, PR #11. A [comparação por seção](auditoria/REVISAO-VISUAL-VITRINE.md) reúne os registros de desktop e celular. Lint e TypeScript passaram e o site compilou. O lint local registrou dois avisos. O [teste de navegador](https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44248197058) e a [validação da vitrine](https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44248203943) passaram.
