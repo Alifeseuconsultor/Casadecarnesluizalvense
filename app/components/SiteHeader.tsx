@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu, ShoppingBag, X } from "lucide-react";
-
-type SiteHeaderProps = {
-  cartCount: number;
-  onCartOpen: () => void;
-};
+import { Menu, X } from "lucide-react";
 
 function BrandMark() {
   return (
@@ -27,7 +22,7 @@ const links = [
   { label: "Contato", href: "#contato" },
 ];
 
-export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
+export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -71,11 +66,7 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
 
       <div className="lux-header-actions">
         <a className="header-phone" href="tel:+554733044430">Atendimento <span>(47) 3304-4430</span></a>
-        <button className="lux-cart-trigger" type="button" onClick={onCartOpen} aria-label={"Abrir carrinho, " + cartCount + " itens"}>
-          <ShoppingBag size={19} strokeWidth={1.5}/>
-          <span>Carrinho</span>
-          <b>{cartCount}</b>
-        </button>
+        <a className="lux-cart-trigger" href="#cortes">Ver catálogo</a>
         <button
           className="mobile-menu-trigger"
           type="button"
@@ -102,9 +93,7 @@ export default function SiteHeader({ cartCount, onCartOpen }: SiteHeaderProps) {
             {links.map((link) => (
               <a href={link.href} key={link.href} onClick={closeMenu}>{link.label}</a>
             ))}
-            <button type="button" onClick={() => { closeMenu(); onCartOpen(); }}>
-              <ShoppingBag size={16}/> Abrir carrinho ({cartCount})
-            </button>
+            <a href="#cortes" onClick={closeMenu}>Ver catálogo</a>
           </motion.nav>
         )}
       </AnimatePresence>
