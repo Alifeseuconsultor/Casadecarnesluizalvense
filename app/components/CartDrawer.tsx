@@ -56,12 +56,16 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
       if (event.shiftKey && (document.activeElement === first || !dialogRef.current.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
       else if (!event.shiftKey && (document.activeElement === last || !dialogRef.current.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
     };
-    closeButtonRef.current?.focus();
+    // Garante foco inicial após a montagem do painel animado.
+    const focusFrame = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKey);
     return () => {
       window.removeEventListener("keydown", handleKey);
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       previousFocus?.focus();
     };
