@@ -68,15 +68,20 @@ try {
     });
     const errors = [];
     page.on("pageerror", error => errors.push(String(error)));
-    const response = await page.goto(url, { waitUntil: "networkidle" });
+    page.on("requestfailed", request => console.warn("Falha de recurso:", request.url(), request.failure()?.errorText));
+    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
     assert(response?.ok(), "Vitrine inacessível");
     await page.getByRole("heading", { level: 1, name: /Um bom corte/ }).waitFor();
+    await page.locator("#cortes .catalog-empty:not([role=status]), #cortes .catalog-toolbar, #cortes [role=alert], #cortes [role=status]:not(:has-text('Carregando'))").first().waitFor();
     for (const id of sections) {
       await page.locator("#" + id).scrollIntoViewIfNeeded();
     }
     await page.evaluate(async () => {
-      await document.fonts.ready;
-      await Promise.all(Array.from(document.images, image => image.decode().catch(() => {})));
+      for (const image of document.images) image.loading = "eager";
+      await Promise.race([
+        Promise.all([document.fonts.ready, ...Array.from(document.images, image => image.decode().catch(() => {}))]),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Tempo excedido ao carregar as fontes e fotografias.")), 30000)),
+      ]);
       window.scrollTo({ top: 0, behavior: "instant" });
     });
     const dimensions = await page.evaluate(() => ({
@@ -106,7 +111,7 @@ try {
     }
     const tabs = page.locator(".map-region-tabs button");
     for (const button of await tabs.all()) {
-      const region = await button.innerText();
+      const region = (await button.textContent()).trim();
       await button.click();
       await page.locator(".region-detail").getByRole("heading", { name: region, exact: true }).waitFor();
     }
