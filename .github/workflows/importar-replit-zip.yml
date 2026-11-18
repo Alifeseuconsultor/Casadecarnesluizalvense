@@ -6,6 +6,7 @@ on:
       - import/replit-casa-de-carnes
     paths:
       - 'replit-app/Casa-de-Carnes-Replit-fonte-limpa.zip'
+      - '.github/workflows/importar-replit-zip.yml'
   workflow_dispatch:
 
 permissions:
@@ -20,38 +21,65 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Extrair arquivos preservando diretorios
+      - name: Extrair somente fonte e imagens utilizadas
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path, PurePosixPath
           from zipfile import ZipFile
-          import shutil
-          import stat
+          import shutil, stat
 
           root = Path("replit-app")
           archive = root / "Casa-de-Carnes-Replit-fonte-limpa.zip"
           if not archive.is_file():
-              raise SystemExit("ZIP nao encontrado em replit-app. Envie primeiro o arquivo indicado.")
+              raise SystemExit("ZIP nao encontrado em replit-app.")
+          permitted_images = {
+              "image_1794603595147.png",
+              "image_1794933508020.png",
+              "image_1794933513623.png",
+              "image_1794933519447.png",
+              "image_1794960415962.png",
+              "image_1794960422295.png",
+              "image_1794960427962.png",
+              "image_1794960438353.png",
+              "image_1794960442023.png",
+              "image_1794960450667.png",
+              "image_1794960456944.png",
+              "image_1794960475723.png",
+          }
+          extracted = 0
           with ZipFile(archive) as z:
-              entries = [i for i in z.infolist() if not i.is_dir()]
-              if len(entries) != 337:
-                  raise SystemExit(f"Quantidade inesperada: {len(entries)} arquivos (esperados: 337).")
-              for item in entries:
-                  name = PurePosixPath(item.filename)
-                  if name.is_absolute() or '..' in name.parts or not name.parts:
-                      raise SystemExit(f"Caminho inseguro no ZIP: {item.filename}")
+              items = [i for i in z.infolist() if not i.is_dir()]
+              if len(items) not in (337, 602):
+                  raise SystemExit(f"Arquivo desconhecido: {len(items)} arquivos.")
+              for item in items:
+                  original = PurePosixPath(item.filename)
+                  if original.is_absolute() or ".." in original.parts:
+                      raise SystemExit(f"Caminho inseguro: {item.filename}")
+                  parts = original.parts
+                  if parts and parts[0] == "Acougue-Administrativo":
+                      parts = parts[1:]
+                  if not parts:
+                      continue
                   if stat.S_ISLNK(item.external_attr >> 16):
                       raise SystemExit(f"Link simbolico nao permitido: {item.filename}")
-                  target = root.joinpath(*name.parts)
+                  rel = PurePosixPath(*parts)
+                  if ".git" in parts or "tmp" == parts[0] or "dist" in parts or rel.name.endswith(".tsbuildinfo"):
+                      continue
+                  if parts[0] == "attached_assets" and not (len(parts) == 2 and parts[1] in permitted_images):
+                      continue
+                  target = root.joinpath(*parts)
                   target.parent.mkdir(parents=True, exist_ok=True)
-                  with z.open(item) as source, target.open('wb') as dest:
-                      shutil.copyfileobj(source, dest)
-              print(f"{len(entries)} arquivos extraidos em {root}")
+                  with z.open(item) as src, target.open("wb") as dest:
+                      shutil.copyfileobj(src, dest)
+                  extracted += 1
+          if extracted != 337:
+              raise SystemExit(f"Extracao incompleta: {extracted}/337 arquivos.")
+          print(f"Extracao validada: {extracted} arquivos.")
           archive.unlink()
           PY
 
-      - name: Registrar importacao sem alterar a main
+      - name: Registrar importacao sem alterar main
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -61,5 +89,5 @@ jobs:
             echo "Nenhum arquivo novo para registrar"
             exit 0
           fi
-          git commit -m "chore(replit): importar fonte completa do ZIP preparado"
+          git commit -m "chore(replit): importar fonte completa filtrada do ZIP"
           git push origin HEAD:import/replit-casa-de-carnes
