@@ -1,0 +1,65 @@
+name: Importar ZIP completo do Replit
+
+on:
+  push:
+    branches:
+      - import/replit-casa-de-carnes
+    paths:
+      - 'replit-app/Casa-de-Carnes-Replit-fonte-limpa.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout da branch de importacao
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Extrair arquivos preservando diretorios
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import shutil
+          import stat
+
+          root = Path("replit-app")
+          archive = root / "Casa-de-Carnes-Replit-fonte-limpa.zip"
+          if not archive.is_file():
+              raise SystemExit("ZIP nao encontrado em replit-app. Envie primeiro o arquivo indicado.")
+          with ZipFile(archive) as z:
+              entries = [i for i in z.infolist() if not i.is_dir()]
+              if len(entries) != 337:
+                  raise SystemExit(f"Quantidade inesperada: {len(entries)} arquivos (esperados: 337).")
+              for item in entries:
+                  name = PurePosixPath(item.filename)
+                  if name.is_absolute() or '..' in name.parts or not name.parts:
+                      raise SystemExit(f"Caminho inseguro no ZIP: {item.filename}")
+                  if stat.S_ISLNK(item.external_attr >> 16):
+                      raise SystemExit(f"Link simbolico nao permitido: {item.filename}")
+                  target = root.joinpath(*name.parts)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with z.open(item) as source, target.open('wb') as dest:
+                      shutil.copyfileobj(source, dest)
+              print(f"{len(entries)} arquivos extraidos em {root}")
+          archive.unlink()
+          PY
+
+      - name: Registrar importacao sem alterar a main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A replit-app
+          if git diff --cached --quiet; then
+            echo "Nenhum arquivo novo para registrar"
+            exit 0
+          fi
+          git commit -m "chore(replit): importar fonte completa do ZIP preparado"
+          git push origin HEAD:import/replit-casa-de-carnes
