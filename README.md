@@ -30,3 +30,7 @@ npm run build
 Esta é uma primeira versão visual (frontend demonstrativo). Os produtos, preços e imagens são dados provisórios. Ainda não há banco de dados, autenticação, checkout real, pagamentos, agenda de retirada ou painel operacional. Não aceitar pedidos ou pagamentos reais até integrar e validar esses serviços.
 
 Consulte `docs/BRIEF-MVP.md` para os requisitos completos.
+
+Para continuar com outro agente, comece por [AGENTS.md](AGENTS.md). Ele aponta para o
+[plano](docs/PLANO.md), o [status](docs/STATUS.md) e o [catálogo de skills](docs/SKILLS.md).
+Confira o pacote com `node tools/verify-skills.mjs`.
