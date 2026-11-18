@@ -38,7 +38,9 @@ Por último: “Terminando passa o bastão pra outro agente. Vou mudar para agen
 - Execução inicial: https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44243023111 — falhou por autenticação Vercel.
 - Correção: iniciar o Next.js local no GitHub Actions e capturar localhost:3000. Execução iniciada: https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44243295353
 - O script tenta capturar 14 PNGs: desktop/mobile × {página completa, início, cortes, mapa-do-boi, dry-aged, kits-churrasco, contato}, além de `.audit/site-report.json`.
-- Se o run concluir com sucesso, as imagens serão commitadas em `.audit/screenshots/` nesta branch e poderão ser visualizadas no GitHub. Se falhar, inspecione logs e corrija; **não afirme que fez análise visual sem abrir efetivamente os arquivos**.
+- **Concluído:** execução https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44244043974 terminou com sucesso; 14 PNGs salvos em https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/tree/consolidacao/site-final-20261118/.audit/screenshots e relatório em `.audit/site-report.json`.
+- Relatório automatizado: desktop 1440px e mobile 390px, respostas HTTP 200, todas as 6 seções identificadas, sem exceções JavaScript coletadas e sem overflow horizontal global (`scrollWidth == innerWidth`).
+- **Pendente:** abrir e inspecionar visualmente os 14 PNGs; não declarar que aparência e UX foram aprovadas apenas com o relatório automatizado.
 - O procedimento com localhost captura o mesmo código da branch, mas não prova o comportamento da implantação Vercel nem dos dados reais de API.
 
 ## Pendências prioritárias para o Cowork
