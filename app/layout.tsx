@@ -3,6 +3,7 @@ import "@fontsource-variable/cormorant-garamond/wght.css";
 import "@fontsource-variable/cormorant-garamond/wght-italic.css";
 import "@fontsource-variable/dm-sans/wght.css";
 import "./globals.css";
+import "./catalog-topics.css";
 
 export const metadata: Metadata = {
   title: "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",

@@ -1,5 +1,7 @@
 "use client";
 
+import CatalogTopics from "./CatalogTopics";
+import { useCatalog } from "./CatalogProvider";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -15,15 +17,22 @@ const links = [
 ];
 
 export default function SiteHeader({ phone, phoneLabel }: { phone: string; phoneLabel: string }) {
+  const { selectTopic } = useCatalog();
   const menuButton = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 761px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMenuOpen(false); };
+    desktop.addEventListener("change", closeOnDesktop);
     const update = () => setScrolled(window.scrollY > 30);
     update();
     window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      desktop.removeEventListener("change", closeOnDesktop);
+    };
   }, []);
 
   useEffect(() => {
@@ -58,7 +67,7 @@ export default function SiteHeader({ phone, phoneLabel }: { phone: string; phone
 
       <div className="lux-header-actions">
         {phone && <a className="header-phone" href={`tel:+${phone}`}>Atendimento <span>{phoneLabel}</span></a>}
-        <a className="lux-cart-trigger" href="#cortes" onClick={closeMenu}>Ver catálogo</a>
+        <a className="lux-cart-trigger" href="#cortes" onClick={() => { selectTopic(null); closeMenu(); }}>Ver catálogo</a>
         <button
           ref={menuButton}
           className="mobile-menu-trigger"
@@ -72,6 +81,7 @@ export default function SiteHeader({ phone, phoneLabel }: { phone: string; phone
         </button>
       </div>
 
+      {!menuOpen && <CatalogTopics />}
       <AnimatePresence>
         {menuOpen && (
           <motion.nav

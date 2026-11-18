@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight, Clock3, MapPin, Phone } from "lucide-react";
+import { CatalogProvider } from "./components/CatalogProvider";
 import SiteHeader from "./components/SiteHeader";
 import Hero from "./components/Hero";
 import LiveCatalog from "./components/LiveCatalog";
@@ -21,7 +22,7 @@ export default function Home() {
   const phoneLabel = phone.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, "($1) $2-$3");
 
   return (
-    <>
+    <CatalogProvider>
       <a className="skip-navigation" href="#conteudo">Pular para o conteúdo</a>
       <SiteHeader phone={phone} phoneLabel={phoneLabel} />
       <main id="conteudo" className="luxury-store" tabIndex={-1}>
@@ -58,6 +59,6 @@ export default function Home() {
           <a href="#inicio" className="footer-top">Voltar ao início ↑</a>
         </footer>
       </main>
-    </>
+    </CatalogProvider>
   );
 }

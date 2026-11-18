@@ -48,6 +48,13 @@ async function verifyCatalog(page, device) {
   await catalog.getByText("Preço por kg (venda em gramas)").waitFor();
   await catalog.getByText("ESGOTADO", { exact: true }).waitFor();
   await captureSection(page, "cortes", device + "-catalogo-dados-de-teste");
+  const topics = page.getByRole("navigation", { name: "Categorias de produtos" });
+  await topics.getByRole("link", { name: "Kits", exact: true }).click();
+  await catalog.getByRole("heading", { name: /Catálogo de.*kits/i }).waitFor();
+  assert.equal(await catalog.locator(".cut-card").count(), 1);
+  assert.equal(await topics.getByRole("link", { name: "Kits" }).getAttribute("aria-current"), "true");
+  assert.equal(await topics.getByRole("link", { name: "Miúdos" }).count(), 0);
+  await topics.getByRole("link", { name: "Todos" }).click();
   await catalog.getByRole("button", { name: "Kits", exact: true }).click();
   assert.equal(await catalog.locator(".cut-card").count(), 1);
   await catalog.getByRole("searchbox").fill("inexistente");
@@ -115,6 +122,14 @@ try {
       await button.click();
       await page.locator(".region-detail").getByRole("heading", { name: region, exact: true }).waitFor();
     }
+    const rail = page.getByRole("navigation", { name: "Categorias de produtos" });
+    if (device.name === "mobile") {
+      await rail.getByRole("button", { name: "Próximas categorias" }).click();
+      await page.waitForFunction(() => document.querySelector(".topic-scroll").scrollLeft > 0);
+    }
+    await rail.getByRole("link", { name: "Suínos", exact: true }).click();
+    await page.locator("#cortes").getByRole("heading", { name: /Catálogo de.*suínos/i }).waitFor();
+    await rail.getByRole("link", { name: "Todos", exact: true }).click();
     const title = await page.title();
     await verifyCatalog(page, device.name);
     assert.deepEqual(errors, [], "Erros de execução no navegador");
