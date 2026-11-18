@@ -98,7 +98,7 @@ export default function CutsShowcase({ onAdd }: CutsShowcaseProps) {
 
         <div className="catalog-toolbar">
           <div className="catalog-toolbar-title">
-            <div><span>NOSSA VITRINE</span><strong>{filteredCuts.length} {filteredCuts.length === 1 ? "corte disponível" : "cortes selecionados"}</strong></div>
+            <div><span>NOSSA VITRINE</span><strong>{filteredCuts.length} {filteredCuts.length === 1 ? "corte selecionado" : "cortes selecionados"}</strong></div>
           </div>
           <label className="catalog-search">
             <Search size={15}/>

@@ -29,7 +29,7 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
   const hasWholePiece = cuts.some((line) => line.weightLabel === "Peça inteira");
 
   const message = [
-    "Olá! Gostaria de solicitar este pedido pela Casa de Carnes Luiz Alvense:",
+    "Olá! Gostaria de consultar a disponibilidade e os valores desta seleção na Casa de Carnes Luiz Alvense:",
     "",
     ...lines.map((line) => line.category === "cut"
       ? `• ${line.name} — ${line.weightLabel} × ${line.quantity}`
@@ -126,9 +126,9 @@ export default function CartDrawer({ open, lines, onClose, onQuantity, onRemove,
                   </div>
                   <div className="cart-price-note"><span>Valores dos cortes</span><strong>Confirmar com a equipe</strong></div>
                   <a className="whatsapp-checkout" href={whatsappUrl} target="_blank" rel="noreferrer">
-                    Finalizar pedido pelo WhatsApp <ArrowUpRight size={17}/>
+                    Consultar seleção pelo WhatsApp <ArrowUpRight size={17}/>
                   </a>
-                  <p>Seu pedido será confirmado pela nossa equipe antes do preparo.</p>
+                  <p>Esta mensagem solicita atendimento. A equipe confirmará disponibilidade, valores e peso final antes de qualquer pedido.</p>
                 </footer>
               </>
             )}
