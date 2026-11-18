@@ -1,0 +1,44 @@
+[
+  {
+    "device": "desktop",
+    "status": 200,
+    "title": "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "scrollHeight": 4514,
+    "brokenImages": [],
+    "timelineCardWidth": 701,
+    "errors": [],
+    "sections": [
+      "inicio",
+      "cortes",
+      "mapa-do-boi",
+      "dry-aged",
+      "kits-churrasco",
+      "contato",
+      "rodape"
+    ],
+    "catalogTest": "recuperação, categorias, busca, filtros, vazio, esgotado e venda em gramas"
+  },
+  {
+    "device": "mobile",
+    "status": 200,
+    "title": "Casa de Carnes Luiz Alvense | Cortes Nobres & Boutique",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "scrollHeight": 5067,
+    "brokenImages": [],
+    "timelineCardWidth": 321,
+    "errors": [],
+    "sections": [
+      "inicio",
+      "cortes",
+      "mapa-do-boi",
+      "dry-aged",
+      "kits-churrasco",
+      "contato",
+      "rodape"
+    ],
+    "catalogTest": "recuperação, categorias, busca, filtros, vazio, esgotado e venda em gramas"
+  }
+]

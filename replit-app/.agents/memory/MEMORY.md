@@ -1,0 +1,4 @@
+- [Catalog price basis](catalog-price-basis.md) — preserve legacy order pricing: weight-based items use price per kg, while unit items use price per unit.
+- [Account access policy](account-access-policy.md) — the first public registration becomes admin; admins manage operator and customer roles.
+- [Luisalvense brand reference](luisalvense-brand-reference.md) — use the butcher’s Instagram, logo, verified product photos, hours, and Google reviews as customer-facing brand context.
+- [Google Maps panorama fallback](google-maps-panorama.md) — when Google blocks an embedded 360° view, link to it in a new tab and keep the storefront open.

@@ -7,5 +7,6 @@ const compat = new FlatCompat({
 });
 
 export default [
+  { ignores: [".next/**", "next-env.d.ts", ".agents/skills/**", ".venv-web-audit/**", ".audit/**", "replit-app/**", "lixeira/**"] },
   ...compat.extends("next/core-web-vitals", "next/typescript")
 ];

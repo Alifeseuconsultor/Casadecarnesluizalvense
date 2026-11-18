@@ -1,0 +1,19 @@
+kind = "design-system"
+previewPath = "/luisalvense-design-system/"
+title = "Casa Luisalvense Design System"
+description = "Sistema visual reutilizável da Casa de Carnes Luisalvense, extraído do painel de Catálogo do Açougue Operação, com temas claro e escuro, componentes e uma prévia navegável."
+version = "1.0.0"
+id = "artifacts/luisalvense-design-system"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/luisalvense-design-system/" ]
+localPort = 22098
+
+[services.development]
+run = "pnpm --filter @workspace/luisalvense-design-system run dev"
+
+[services.env]
+PORT = "22098"
+BASE_PATH = "/luisalvense-design-system/"
