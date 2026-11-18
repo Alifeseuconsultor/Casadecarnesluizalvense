@@ -19,10 +19,16 @@ const price = (p: Product) => {
 };
 const basis = (p: Product) => p.saleUnit === "unidade" || p.productType === "combo" ? "un." : "kg";
 
+function ProductImage({ src, name }: { src: string | null; name: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) return <div className="catalog-placeholder">Foto indisponível</div>;
+  return <img src={src} alt={name} loading="lazy" onError={() => setFailed(true)} />;
+}
+
 export default function LiveCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [term, setTerm] = useState("");
   const [category, setCategory] = useState("Todas");
@@ -31,21 +37,23 @@ export default function LiveCatalog() {
     const controller = new AbortController();
     fetch("/api/catalog", { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
+        if (!response.ok) throw new Error("catalog unavailable");
         const json: unknown = await response.json();
-        if (!response.ok) {
-          const message = json && typeof json === "object" && "error" in json ? String(json.error) : "Catálogo temporariamente indisponível.";
-          throw new Error(message);
-        }
-        if (!Array.isArray(json)) throw new Error("Resposta inválida do catálogo.");
+        if (!Array.isArray(json)) throw new Error("invalid catalog response");
         return json as Product[];
       })
-      .then((data) => { setProducts(data); setError(""); })
-      .catch((reason: unknown) => {
-        if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Não foi possível carregar o catálogo.");
+      .then((data) => { setProducts(data); setError(false); })
+      .catch(() => {
+        if (!controller.signal.aborted) setError(true);
       })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [refreshKey]);
+
+  function resetFilters() {
+    setCategory("Todas");
+    setTerm("");
+  }
 
   const categories = useMemo(() => ["Todas", ...new Set(products.map(p => p.category))], [products]);
   const filtered = useMemo(() => products.filter(p =>
@@ -64,10 +72,12 @@ export default function LiveCatalog() {
       </div>
       {loading ? <div className="catalog-empty" role="status">Carregando produtos da loja...</div> :
         error ? <div className="catalog-empty" role="alert">
-          <p>{error}</p>
-          <button type="button" onClick={() => { setLoading(true); setRefreshKey(k => k + 1); }}><RefreshCw size={15}/> Tentar novamente</button>
+          <h3>Catálogo indisponível no momento</h3>
+          <p>Enquanto isso, conheça os cortes e as sugestões de preparo no mapa do boi.</p>
+          <div className="catalog-recovery"><a href="#mapa-do-boi">Explorar o mapa do boi <ArrowUpRight size={16}/></a>
+          <button type="button" onClick={() => { setLoading(true); setRefreshKey(k => k + 1); }}><RefreshCw size={15}/> Tentar novamente</button></div>
         </div> : products.length === 0 ?
-        <div className="catalog-empty">O catálogo ainda não tem produtos disponíveis.</div> :
+        <div className="catalog-empty" role="status">Nenhum produto disponível no catálogo hoje.</div> :
         <>
           <div className="catalog-toolbar">
             <div className="catalog-toolbar-title"><div><span>NOSSA VITRINE</span><strong>{filtered.length} produtos encontrados</strong></div></div>
@@ -76,14 +86,14 @@ export default function LiveCatalog() {
           <div className="catalog-layout">
             <aside className="catalog-sidebar" aria-label="Categorias">
               <strong>Categorias</strong>
-              {categories.map(c => <button type="button" key={c} className={category === c ? "catalog-category active" : "catalog-category"} onClick={() => setCategory(c)}>{c}</button>)}
+              {categories.map(c => <button type="button" key={c} aria-pressed={category === c} className={category === c ? "catalog-category active" : "catalog-category"} onClick={() => setCategory(c)}>{c}</button>)}
             </aside>
             <div className="catalog-results">
               <div className="catalog-results-top"><span>Exibindo {filtered.length} de {products.length} produtos</span><span>PREÇOS DO CATÁLOGO</span></div>
               <div className="cuts-grid">
                 {filtered.map(p => <article className="cut-card" key={p.id}>
                   <div className="cut-card-image">
-                    {p.imageUrl ? <img src={p.imageUrl} alt={p.name} loading="lazy"/> : <div className="catalog-placeholder">Imagem em preparação</div>}
+                    <ProductImage src={p.imageUrl} name={p.name} key={p.imageUrl} />
                     {p.status === "sold_out" && <span className="cut-badge">ESGOTADO</span>}
                   </div>
                   <div className="cut-card-copy">
@@ -100,7 +110,7 @@ export default function LiveCatalog() {
                   </div>
                 </article>)}
               </div>
-              {filtered.length === 0 && <div className="catalog-empty">Nenhum produto encontrado. Ajuste os filtros.</div>}
+              {filtered.length === 0 && <div className="catalog-empty"><p>Nenhum produto encontrado.</p><button type="button" onClick={resetFilters}>Limpar filtros</button></div>}
             </div>
           </div>
         </>}

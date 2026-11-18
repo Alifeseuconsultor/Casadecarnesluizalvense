@@ -40,35 +40,25 @@ export default function DryAgedTimeline() {
     <section className="dry-aged-section" id="dry-aged" ref={sectionRef}>
       <div className="dry-aged-texture"/>
       <div className="section-shell dry-aged-shell">
-        <motion.div className="dry-aged-intro" initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .25 }} transition={{ duration: .72, ease: [0.22, 1, 0.36, 1] }}>
-          <div className="eyebrow-copper">O TEMPO COMO INGREDIENTE <span/></div>
-          <h2>Dry Aged.<br/><em>A arte de esperar pelo extraordinário.</em></h2>
+        <div className="dry-aged-intro">
+          <div className="eyebrow-copper">MATURAÇÃO A SECO <span/></div>
+          <h2>Dry Aged.<br/><em>O que muda com o tempo?</em></h2>
           <p>A maturação a seco é um processo cuidadoso de transformação. O tempo aprofunda aromas, concentra sabores e revela novas camadas de textura.</p>
-          <span className="dry-aged-note">PROCESSO ARTESANAL · TEMPO · CONTROLE</span>
-        </motion.div>
+        </div>
 
         <div className="dry-aged-timeline">
           <div className="timeline-track"><motion.div className="timeline-progress" style={{ scaleY: lineScale }}/></div>
-          {milestones.map((item, index) => {
+          {milestones.map((item) => {
             const Icon = item.icon;
             return (
-              <motion.article
-                className={"timeline-milestone milestone-" + index}
-                key={item.day}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: .4 }}
-                transition={{ duration: .68, delay: index * .08, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="timeline-marker"><span/><i>{index + 1}</i></div>
-                <div className="timeline-copy">
-                  <div className="timeline-day"><strong>{item.day}</strong><span>{item.unit}</span></div>
-                  <div className="timeline-card">
-                    <Icon size={18} strokeWidth={1.45}/>
-                    <div><h3>{item.title}</h3><p>{item.body}</p></div>
-                  </div>
+              <article className="timeline-milestone" key={item.day}>
+                <div className="timeline-marker" aria-hidden="true"><span/></div>
+                <div className="timeline-day"><strong>{item.day}</strong><span>{item.unit}</span></div>
+                <div className="timeline-card">
+                  <Icon size={18} strokeWidth={1.45}/>
+                  <div><h3>{item.title}</h3><p>{item.body}</p></div>
                 </div>
-              </motion.article>
+              </article>
             );
           })}
         </div>

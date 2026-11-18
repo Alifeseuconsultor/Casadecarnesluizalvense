@@ -23,3 +23,16 @@ Sem a variável, o site exibe “O catálogo online ainda não está configurado
 
 ## Nota
 A fonte do backend Replit está preservada em `replit-app/`. Nenhum dado real foi alterado ou pedido criado nesta etapa.
+
+## Contatos da vitrine na prévia
+
+A página lê os contatos durante o build. Configure os dados confirmados no ambiente de preview e gere uma nova versão. Telefone e WhatsApp são independentes.
+
+| Variável | Conteúdo |
+| --- | --- |
+| `STORE_PHONE` | Telefone oficial com código de país 55 e DDD |
+| `STORE_WHATSAPP` | Número confirmado para WhatsApp com código de país 55 e DDD |
+| `STORE_ADDRESS` | Endereço completo confirmado da loja |
+| `STORE_HOURS_CONFIRMED` | Use `true` apenas após conferir os horários de `storeHours` em `app/components/data.ts` |
+
+Com os campos em branco, a seção exibe a cidade e a fotografia do balcão. O catálogo pode ser testado sem configurar os contatos.

@@ -30,14 +30,14 @@ export default function InteractiveBeefMap({ onChooseCut }: InteractiveBeefMapPr
   return (
     <section className="beef-map-section" id="mapa-do-boi">
       <div className="section-shell">
-        <motion.div className="map-intro" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+        <div className="map-intro">
           <div className="eyebrow-copper">CONHEÇA A ORIGEM DO SABOR <span/></div>
           <h2>Mapa do boi.<br/><em>Cada corte tem sua história.</em></h2>
           <p>Explore as principais regiões e descubra características, sugestões de preparo e o ponto que valoriza cada corte.</p>
-        </motion.div>
+        </div>
 
         <div className="beef-map-layout">
-          <motion.div className="beef-illustration" initial={{ opacity: 0, x: -26 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+          <div className="beef-illustration">
             <div className="map-art-label"><span>ANATOMIA DO CORTE</span><i/> SELEÇÃO BOVINA</div>
             <svg viewBox="0 0 600 320" role="img" aria-label="Ilustração do boi dividida em quatro regiões de cortes">
               <defs>
@@ -77,7 +77,7 @@ export default function InteractiveBeefMap({ onChooseCut }: InteractiveBeefMapPr
               </g>
               <path d="M124 153 L122 176 M469 148 L461 181" stroke="#c89b6e" strokeWidth="1.2" opacity=".55"/>
               <path d="M224 178 L222 258 M348 180 L352 258" stroke="#c89b6e" strokeWidth="1" opacity=".3" strokeDasharray="3 5"/>
-              <g fill="#e5c49a" fontSize="11" fontFamily="Arial, sans-serif" letterSpacing="1.4">
+              <g pointerEvents="none" fill="#e5c49a" fontSize="11" fontFamily="Arial, sans-serif" letterSpacing="1.4">
                 <text x="145" y="119">OMBRO</text>
                 <text x="260" y="119">COSTELA</text>
                 <text x="350" y="119">LOMBO</text>
@@ -87,12 +87,12 @@ export default function InteractiveBeefMap({ onChooseCut }: InteractiveBeefMapPr
               <text x="300" y="299" fill="#a99a82" fontSize="9" textAnchor="middle" letterSpacing="3">SELECIONE UMA REGIÃO</text>
             </svg>
             <div className="map-region-tabs">
-              {beefRegions.map((region) => <button type="button" key={region.id} className={selectedId === region.id ? "active" : ""} onClick={() => choose(region)}>{region.name}</button>)}
+              {beefRegions.map((region) => <button type="button" key={region.id} aria-pressed={selectedId === region.id} className={selectedId === region.id ? "active" : ""} onClick={() => choose(region)}>{region.name}</button>)}
             </div>
-          </motion.div>
+          </div>
 
           <div className="region-detail-panel">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div key={selected.id} className="region-detail" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: .42, ease: [0.22, 1, 0.36, 1] }}>
                 <div className="detail-index">REGIÃO SELECIONADA <span>0{beefRegions.findIndex((r) => r.id === selected.id) + 1} / 04</span></div>
                 <h3>{selected.name}</h3>

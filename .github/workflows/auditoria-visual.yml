@@ -6,7 +6,14 @@ on:
     paths:
       - '.github/workflows/auditoria-visual.yml'
       - 'scripts/audit-site.mjs'
+      - 'app/**'
+      - 'public/loja/**'
+      - 'package.json'
   workflow_dispatch:
+
+concurrency:
+  group: auditoria-visual-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -43,6 +50,7 @@ jobs:
         with:
           name: auditoria-visual-site
           path: .audit/
+          include-hidden-files: true
           if-no-files-found: warn
       - name: Registrar capturas na branch de trabalho
         if: success()
