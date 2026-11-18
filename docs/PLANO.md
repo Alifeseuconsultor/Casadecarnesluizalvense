@@ -12,9 +12,13 @@ A entrega desta etapa é a branch com o pacote e a documentação. As etapas aba
 
 ## 1. Identificar o que está em uso
 
+Concluído no [inventário](auditoria/INVENTARIO.md).
+
 Mapear branch, commit, URL, rotas e papéis de cliente e equipe. Distinguir a vitrine, o preview Gourmet e o aplicativo operacional. Registrar a identidade visual e as regras comerciais encontradas. Entrega em `docs/auditoria/INVENTARIO.md`.
 
 ## 2. Auditar as jornadas existentes
+
+Concluído para a cópia local representativa. Veja [achados, evidências e limites](auditoria/ACHADOS.md).
 
 | Frente | O que avaliar |
 | --- | --- |
@@ -31,6 +35,8 @@ Mapear branch, commit, URL, rotas e papéis de cliente e equipe. Distinguir a vi
 Entregar `docs/auditoria/ACHADOS.md` com evidência por fluxo, impacto e forma de validar. Identificar pontos que dependeram de leitura estática ou ficaram sem teste. Usar dados de teste nos fluxos que geram registros.
 
 ## 3. Priorizar a evolução
+
+Ordem proposta em [evolução recomendada](auditoria/EVOLUCAO.md).
 
 Preparar `docs/auditoria/EVOLUCAO.md` com prioridades por impacto, esforço e dependência. Definir a direção visual a partir dos padrões aprovados. Traduzir a proposta em jornadas, mudanças delimitadas e critérios de aceite.
 

@@ -24,6 +24,8 @@ Na frente Replit, verifique `artifacts/acougue-ops/src/pages/storefront.tsx`, `a
 
 A instalação local observada tinha Python 3.13.16 gerenciado por uv e Playwright 1.65.2 em um ambiente virtual. A importação e o driver responderam. A instalação e o teste de abertura do Chromium ficaram pendentes. O [guia de ambiente](AMBIENTE-AUDITORIA.md) mostra como completar essa preparação.
 
-A auditoria do produto começa pela etapa 1 do [plano](PLANO.md), com o inventário das frentes usando as URLs e branches corretas.
+As etapas 1 a 3 do [plano](PLANO.md) foram registradas com [inventário](auditoria/INVENTARIO.md), [achados](auditoria/ACHADOS.md) e [evolução recomendada](auditoria/EVOLUCAO.md). O Chromium rodou no ambiente Linux da auditoria. O painel e a loja foram testados localmente com uma base descartável. A URL online do aplicativo administrativo segue sem confirmação.
+
+A etapa de implementação do redesign aguarda a definição da entrada pública de compra e do ambiente de homologação da equipe.
 
 Ao continuar, registre tarefa, branch, commit, arquivos alterados, verificações, evidências, limitações e próxima ação.
