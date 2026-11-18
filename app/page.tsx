@@ -23,10 +23,14 @@ export default function Home() {
   const [active, setActive] = useState("Todos");
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<number[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
   const [favorites, setFavorites] = useState<number[]>([]);
   const visible = useMemo(() => products.filter(p => (active === "Todos" || p.category === active) && (p.name.toLowerCase().includes(search.toLowerCase()) || p.detail.toLowerCase().includes(search.toLowerCase()))), [active, search]);
 
-  function addToCart(id: number) { setCart(old => [...old, id]); }
+  const cartItems = products.filter(p => cart.includes(p.id)).map(p => ({ ...p, quantity: cart.filter(id => id === p.id).length }));
+  function addToCart(id: number) { setCart(old => [...old, id]); setCartOpen(true); }
+  function removeFromCart(id: number) { setCart(old => { const index = old.indexOf(id); return index < 0 ? old : old.filter((_, i) => i !== index); }); }
+  function clearFromCart(id: number) { setCart(old => old.filter(x => x !== id)); }
   function toggleFavorite(id: number) { setFavorites(old => old.includes(id) ? old.filter(x => x !== id) : [...old, id]); }
 
   return (
@@ -39,8 +43,8 @@ export default function Home() {
         </a>
         <nav className="desktop-nav"><a className="selected" href="#inicio">Início</a><a href="#catalogo">Nosso catálogo</a><a href="#categorias">Categorias</a><a href="#sobre">Nossa qualidade</a></nav>
         <div className="header-actions">
-          <a className="whatsapp-link" href="https://wa.me/" target="_blank" rel="noreferrer"><span>◉</span> WhatsApp</a>
-          <button className="cart-button" onClick={() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })}>Sacola <span className="cart-count">{cart.length}</span></button>
+          <a className="whatsapp-link" href="#contato"><span>◉</span> Contato</a>
+          <button className="cart-button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.length} itens`} aria-expanded={cartOpen}>Sacola <span className="cart-count">{cart.length}</span></button>
         </div>
       </header>
 
@@ -61,7 +65,7 @@ export default function Home() {
       <section className="trust-strip">
         <div><span className="trust-icon">✳</span><span><strong>Seleção criteriosa</strong><small>Qualidade em cada escolha</small></span></div>
         <div><span className="trust-icon">♧</span><span><strong>Corte do seu jeito</strong><small>Do jeito que você prefere</small></span></div>
-        <div><span className="trust-icon">◷</span><span><strong>Retirada agendada</strong><small>Mais praticidade no seu dia</small></span></div>
+        <div><span className="trust-icon">◷</span><span><strong>Retirada a combinar</strong><small>Mais praticidade no seu dia</small></span></div>
         <div><span className="trust-icon">♡</span><span><strong>Atendimento próximo</strong><small>Gente que entende de carne</small></span></div>
       </section>
 
@@ -73,6 +77,7 @@ export default function Home() {
       <section className="products-section" id="catalogo">
         <div className="section-wrap">
           <div className="section-heading product-heading"><div><div className="eyebrow dark"><span /> NOSSA VITRINE</div><h2>Cortes especiais,<br /><em>momentos melhores.</em></h2></div><p>Uma seleção pensada para transformar<br />o simples em algo memorável.</p></div>
+          <p className="demo-notice">Catálogo demonstrativo: imagens, produtos e valores são ilustrativos. Consulte a loja para confirmar opções e disponibilidade.</p>
           <div className="catalog-tools"><div className="filters">{categories.map(c => <button key={c} className={active === c ? "filter active" : "filter"} onClick={() => setActive(c)}>{c}</button>)}</div><label className="search-box"><span>⌕</span><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar um corte..." /></label></div>
           <div className="product-grid">{visible.map(p => <article className="product-card" key={p.id}><div className="product-image"><img src={p.image} alt={p.name} /><span className="product-tag">{p.tag}</span><button className={favorites.includes(p.id) ? "favorite active" : "favorite"} onClick={() => toggleFavorite(p.id)} aria-label="Adicionar aos favoritos">{favorites.includes(p.id) ? "♥" : "♡"}</button><button className="quick-add" onClick={() => addToCart(p.id)}>＋</button></div><div className="product-info"><div className="product-category">{p.category}</div><h3>{p.name}</h3><p>{p.detail}</p><div className="product-buy"><div><strong>{p.price}</strong><small>{p.unit}</small></div><button onClick={() => addToCart(p.id)}>Adicionar <span>↗</span></button></div></div></article>)}</div>
           {visible.length === 0 && <div className="empty-state">Não encontramos esse corte. Experimente outra busca ou categoria.</div>}
@@ -80,11 +85,20 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="quality" id="sobre"><div className="quality-photo" /><div className="quality-copy"><div className="eyebrow"><span /> O CUIDADO ESTÁ NOS DETALHES</div><h2>Não é só sobre<br />carne. É sobre<br /><em>fazer bem feito.</em></h2><p>Acreditamos que uma boa experiência começa muito antes da primeira garfada. Está na escolha, no corte, no cuidado e na atenção a cada pedido.</p><a className="primary-button" href="https://wa.me/" target="_blank" rel="noreferrer">Fale com nossa equipe <span>↗</span></a><div className="quality-signature">LUIZ ALVENSE <span>•</span> CASA DE CARNES</div></div></section>
+      <section className="quality" id="sobre"><div className="quality-photo" /><div className="quality-copy"><div className="eyebrow"><span /> O CUIDADO ESTÁ NOS DETALHES</div><h2>Não é só sobre<br />carne. É sobre<br /><em>fazer bem feito.</em></h2><p>Acreditamos que uma boa experiência começa muito antes da primeira garfada. Está na escolha, no corte, no cuidado e na atenção a cada pedido.</p><a className="primary-button" href="#contato">Informações de contato <span>↗</span></a><div className="quality-signature">LUIZ ALVENSE <span>•</span> CASA DE CARNES</div></div></section>
 
+      <section className="contact-notice" id="contato"><strong>Atendimento da Casa de Carnes</strong><p>O canal oficial de contato ainda não foi configurado neste site. Esta vitrine não recebe pedidos, pagamentos ou reservas.</p></section>
       <section className="closing-banner"><div className="closing-inner"><div className="eyebrow"><span /> SUA MESA MERECE</div><h2>Um bom momento<br /><em>começa com uma boa escolha.</em></h2><a className="light-button" href="#catalogo">Escolher meus cortes <span>↗</span></a></div></section>
       <footer className="footer"><a className="brand footer-brand" href="#inicio"><span className="brand-mark">LA</span><span className="brand-copy"><strong>LUIZ ALVENSE</strong><small>CASA DE CARNES</small></span></a><span>QUALIDADE, CUIDADO E SABOR.</span><span>© 2026 LUIZ ALVENSE</span></footer>
-      {cart.length > 0 && <div className="cart-toast"><span>✓</span> {cart.length} {cart.length === 1 ? "item adicionado" : "itens adicionados"} à sacola</div>}
+      {cartOpen && <div className="cart-layer">
+        <button className="cart-backdrop" aria-label="Fechar sacola" onClick={() => setCartOpen(false)} />
+        <aside className="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+          <div className="cart-panel-header"><div><span className="cart-kicker">SUA SELEÇÃO</span><h2 id="cart-title">Sacola <small>({cart.length})</small></h2></div><button className="cart-close" onClick={() => setCartOpen(false)} aria-label="Fechar sacola">×</button></div>
+          <p className="cart-disclaimer">Esta é uma lista demonstrativa, não um pedido. Preços e disponibilidade precisam ser confirmados com a loja.</p>
+          {cartItems.length === 0 ? <div className="cart-empty"><p>Sua sacola está vazia.</p><button onClick={() => { setCartOpen(false); document.getElementById("catalogo")?.scrollIntoView({behavior:"smooth"}); }}>Explorar catálogo</button></div> :
+          <><ul className="cart-items">{cartItems.map(p => <li key={p.id} className="cart-item"><img src={p.image} alt="" /><div className="cart-item-info"><strong>{p.name}</strong><small>{p.price} {p.unit} · valor ilustrativo</small><div className="cart-quantity"><button onClick={() => removeFromCart(p.id)} aria-label={`Diminuir quantidade de ${p.name}`}>−</button><span>{p.quantity}</span><button onClick={() => addToCart(p.id)} aria-label={`Aumentar quantidade de ${p.name}`}>+</button></div></div><button className="cart-remove" onClick={() => clearFromCart(p.id)} aria-label={`Remover ${p.name}`}>Remover</button></li>)}</ul><div className="cart-panel-footer"><p>{cart.length} {cart.length === 1 ? "item selecionado" : "itens selecionados"} · quantidades de referência, sem peso definido</p><button onClick={() => setCartOpen(false)}>Continuar explorando</button><span>Finalização de pedidos ainda não disponível.</span></div></>}
+        </aside>
+      </div>}
     </main>
   );
 }
