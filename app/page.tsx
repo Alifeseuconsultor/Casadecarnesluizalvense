@@ -72,8 +72,9 @@ export default function Home() {
 
   return (
     <>
+      <a className="skip-to-content" href="#conteudo-principal">Ir para o conteúdo principal</a>
       <SiteHeader cartCount={cartCount} onCartOpen={() => setCartOpen(true)}/>
-      <main className="luxury-store">
+      <main className="luxury-store" id="conteudo-principal" tabIndex={-1}>
         <Hero/>
         <CutsShowcase onAdd={addCut}/>
         <InteractiveBeefMap/>
