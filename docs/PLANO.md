@@ -37,3 +37,9 @@ Preparar `docs/auditoria/EVOLUCAO.md` com prioridades por impacto, esforço e de
 ## 4. Implementar e verificar
 
 Após a solicitação de implementação, trabalhar por jornada na branch correspondente. Comparar antes e depois nas mesmas condições. Verificar as rotas, estados e integrações alteradas e registrar os resultados em STATUS.
+
+### Vitrine pública da consolidação
+
+- [x] Inspecionar as 14 capturas iniciais e corrigir os problemas de apresentação encontrados na vitrine.
+- [ ] Conferir no ambiente comercial os produtos reais e os contatos oficiais.
+- [ ] Aprovação visual do proprietário e decisão de publicação.

@@ -11,3 +11,8 @@
 | Sustentar os achados com evidência | Cada recomendação tem impacto, localização e forma de validação. |
 
 Para novas decisões, registre data, contexto, motivo, consequência e referência à tarefa ou ao PR.
+
+
+### Vitrine pública · 18 de novembro de 2026
+
+As sugestões de churrasco são um guia de preparo. Fotografias de referência que sugeriam produtos disponíveis deram lugar a texto e ícones. A marca e a imagem do balcão vêm do acervo Replit. A exibição do telefone, WhatsApp, endereço e horários depende da confirmação de cada dado. Os detalhes de configuração estão em [Integração de catálogo](INTEGRACAO-CATALOGO.md).

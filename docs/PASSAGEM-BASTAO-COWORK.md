@@ -1,5 +1,13 @@
 # PASSAGEM DE BASTÃO — Casa de Carnes Luiz Alvense
 
+## Revisão visual concluída na branch de consolidação
+
+A implementação está em `589301a` e as 19 capturas verificadas estão em `959f282`, na branch `consolidacao/site-final-20261118`, PR #11. A [comparação por seção](auditoria/REVISAO-VISUAL-VITRINE.md) reúne os registros de desktop e celular. Lint e TypeScript passaram e o site compilou. O lint local registrou dois avisos. O [teste de navegador](https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44248197058) e a [validação da vitrine](https://github.com/Alifeseuconsultor/Casadecarnesluizalvense/actions/runs/44248203943) passaram.
+
+A próxima etapa depende da confirmação dos contatos e horários da loja e da URL pública do catálogo Replit. A seção da loja usa a marca, a foto do balcão e a cidade. O catálogo foi exercitado com amostras controladas. A prévia da Vercel redireciona para autenticação. Checkout, pedidos e aprovação para produção seguem pendentes.
+
+### Histórico anterior à revisão
+
 Data: 18/11/2026. Destino: próximo agente com acesso a Cowork/computador/navegador. Este documento é ponto de continuidade, **não representa conclusão do site**.
 
 ## Pedido do proprietário
