@@ -23,9 +23,19 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install chromium --with-deps
+      - name: Iniciar o site da branch para inspeção
+        run: |
+          npm run build
+          npm run start -- --port 3000 > /tmp/site.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://localhost:3000/ >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/site.log
+          exit 1
       - name: Capturar desktop e mobile
         env:
-          AUDIT_URL: https://casadecarnesluizalvense-git-con-debb34-alifes-projects-601748ef.vercel.app
+          AUDIT_URL: http://localhost:3000/
         run: node scripts/audit-site.mjs
       - name: Guardar imagens e relatorio
         if: always()
